@@ -63,10 +63,10 @@
     -   [x] Mount auth routes.
     -   [x] Basic error handling middleware.
     -   [x] Start the server.
--   [ ] **Testing Phase 1**
-    -   [ ] Test Teacher registration and login using Postman or similar tool.
-    -   [ ] Test Student registration and login.
-    -   [ ] Verify token generation and protected route access.
+-   [x] **Testing Phase 1**
+    -   [x] Test Teacher registration and login using Postman or similar tool.
+    -   [x] Test Student registration and login.
+    -   [x] Verify token generation and protected route access.
 
 ## Phase 2: Class Management
 
