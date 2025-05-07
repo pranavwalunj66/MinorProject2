@@ -9,6 +9,7 @@ class TestRunner {
     this.failed = 0;
     this.totalAssertions = 0;
     this.failedAssertions = 0;
+    this.currentTestFailed = false;
   }
 
   // Add a test to the queue
@@ -24,6 +25,7 @@ class TestRunner {
       return true;
     } else {
       this.failedAssertions++;
+      this.currentTestFailed = true;
       console.error(`\x1b[31m✖ ASSERTION FAILED: ${message}\x1b[0m`);
       console.error(`  Expected: ${JSON.stringify(expected)}`);
       console.error(`  Actual: ${JSON.stringify(actual)}`);
@@ -39,6 +41,7 @@ class TestRunner {
       return true;
     } else {
       this.failedAssertions++;
+      this.currentTestFailed = true;
       console.error(`\x1b[31m✖ ASSERTION FAILED: ${message}\x1b[0m`);
       console.error(`  Expected truthy value but got: ${value}`);
       return false;
@@ -53,6 +56,7 @@ class TestRunner {
       return true;
     } else {
       this.failedAssertions++;
+      this.currentTestFailed = true;
       console.error(`\x1b[31m✖ ASSERTION FAILED: ${message}\x1b[0m`);
       console.error(`  Expected falsy value but got: ${value}`);
       return false;
@@ -118,10 +122,20 @@ class TestRunner {
     
     for (const test of this.tests) {
       try {
+        // Reset the current test failed flag for each test
+        this.currentTestFailed = false;
+        
         console.log(`\x1b[36m► Running test: ${test.name}\x1b[0m`);
         await test.testFunction();
-        console.log(`\x1b[32m✓ PASSED: ${test.name}\x1b[0m\n`);
-        this.passed++;
+        
+        // Check if any assertions failed during the test
+        if (this.currentTestFailed) {
+          console.error(`\x1b[31m✖ FAILED: ${test.name}\x1b[0m\n`);
+          this.failed++;
+        } else {
+          console.log(`\x1b[32m✓ PASSED: ${test.name}\x1b[0m\n`);
+          this.passed++;
+        }
       } catch (error) {
         console.error(`\x1b[31m✖ FAILED: ${test.name}\x1b[0m`);
         console.error(`  Error: ${error.message}`);
