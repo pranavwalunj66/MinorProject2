@@ -162,8 +162,8 @@
 
 ## Phase 4: Quiz Attempt & Results
 
--   [ ] **QuizAttempt Model (`models/QuizAttempt.js`)**
-    -   [ ] Define `QuizAttempt` schema/model:
+-   [x] **QuizAttempt Model (`models/QuizAttempt.js`)**
+    -   [x] Define `QuizAttempt` schema/model:
         -   `quiz` (ObjectId, ref: 'Quiz', required)
         -   `student` (ObjectId, ref: 'Student', required)
         -   `answers` (Array of selected answers, structure to match quiz questions format, e.g., `[{ questionId: ObjectId, selectedOptionIds: [ObjectId] }]` or `[{ questionIndex: Number, selectedOptionIndices: [Number] }]`)
@@ -171,8 +171,8 @@
         -   `totalMarks` (Number, from quiz)
         -   `submittedAt` (Date, default: Date.now)
         -   `classContext` (ObjectId, ref: 'Class', optional, if attempted within a specific class context)
--   [ ] **Quiz Attempt Controllers (`controllers/attemptController.js`)**
-    -   [ ] `submitQuiz` (Student only):
+-   [x] **Quiz Attempt Controllers (`controllers/attemptController.js`)**
+    -   [x] `submitQuiz` (Student only):
         -   Input: `quizId`, `answers` (student's selected options for each question), `classId` (optional).
         -   Verify Student has not attempted this quiz before (for now).
         -   Fetch the Quiz with correct answers.
@@ -180,50 +180,24 @@
         -   Create and save `QuizAttempt` document.
         -   Store reference to this attempt in `Student.quizAttempts`.
         -   Return the result (score, correct answers for review).
-    -   [ ] `getStudentResults` (Student only):
+    -   [x] `getStudentResults` (Student only):
         -   Fetch all `QuizAttempt` records for the logged-in Student, possibly populated with quiz titles.
-    -   [ ] `getQuizResultsForTeacher` (Teacher only):
+    -   [x] `getQuizResultsForTeacher` (Teacher only):
         -   Input: `quizId`, `classId`.
         -   Verify Teacher owns the quiz and class.
         -   Fetch all `QuizAttempt` records for that specific quiz within that specific class.
         -   Populate student names and scores.
--   [ ] **Quiz Attempt Routes (`routes/attemptRoutes.js`)**
-    -   [ ] `POST /api/attempts/submit` (Student, `authMiddleware`, `submitQuiz`)
-    -   [ ] `GET /api/attempts/student` (Student, `authMiddleware`, `getStudentResults`)
-    -   [ ] `GET /api/attempts/teacher/:quizId/class/:classId` (Teacher, `authMiddleware`, `getQuizResultsForTeacher`)
--   [ ] **Update Student Model**
-    -   [ ] Add `quizAttempts` (Array of ObjectId, ref: 'QuizAttempt') to `Student` model.
--   [ ] **Testing Phase 4**
-    -   [ ] Test Student attempting a quiz.
-    -   [ ] Verify score calculation is correct.
-    -   [ ] Verify one-attempt-per-quiz rule (for now).
-    -   [ ] Test Student viewing their past results.
-    -   [ ] Test Teacher viewing results for a specific quiz in a specific class.
+-   [x] **Quiz Attempt Routes (`routes/attemptRoutes.js`)**
+    -   [x] `POST /api/attempts/submit` (Student, `authMiddleware`, `submitQuiz`)
+    -   [x] `GET /api/attempts/student` (Student, `authMiddleware`, `getStudentResults`)
+    -   [x] `GET /api/attempts/teacher/:quizId/class/:classId` (Teacher, `authMiddleware`, `getQuizResultsForTeacher`)
+-   [x] **Update Student Model**
+    -   [x] Add `quizAttempts` (Array of ObjectId, ref: 'QuizAttempt') to `Student` model.
+-   [x] **Testing Phase 4**
+    -   [x] Test Student attempting a quiz.
+    -   [x] Verify score calculation is correct.
+    -   [x] Verify one-attempt-per-quiz rule (for now).
+    -   [x] Test Student viewing their past results.
+    -   [x] Test Teacher viewing results for a specific quiz in a specific class.
 
-## Phase 5: Refinements & Advanced Features (Future)
-
--   [ ] **Error Handling**
-    -   [ ] Implement comprehensive error handling middleware.
-    -   [ ] Standardized error responses.
--   [ ] **Input Validation**
-    -   [ ] Use a library like Joi or express-validator for robust input validation in all controllers.
--   [ ] **Security Enhancements**
-    -   [ ] Rate limiting.
-    -   [ ] Helmet for security headers.
-    -   [ ] Sanitize inputs to prevent XSS, NoSQL injection.
--   [ ] **Quiz Enhancements**
-    -   [ ] Different question types (True/False, Fill in the blanks).
-    -   [ ] Time limits for quizzes.
-    -   [ ] Multiple attempts with settings.
-    -   [ ] Shuffling questions/options.
--   [ ] **Teacher Dashboard Enhancements**
-    -   [ ] Analytics and reporting.
-    -   [ ] Managing students in a class.
--   [ ] **Student Dashboard Enhancements**
-    -   [ ] Detailed feedback on quiz answers.
--   [ ] **Real-time Features (Optional)**
-    -   [ ] Live quiz sessions using WebSockets.
--   [ ] **API Documentation**
-    -   [ ] Use Swagger/OpenAPI for API documentation.
--   [ ] **Deployment**
-    -   [ ] Prepare for deployment (e.g., Docker, Heroku, AWS). 
+ 

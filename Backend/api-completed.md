@@ -739,4 +739,186 @@ Get detailed information about a specific quiz. For teachers, the response inclu
 - **Code**: 404 Not Found
   - **Content**: `{ "success": false, "message": "Quiz not found" }`
 - **Code**: 500 Internal Server Error
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }`
+
+## Quiz Attempt & Results APIs
+
+### Submit Quiz Attempt (Student Only)
+
+Submit answers for a quiz attempt.
+
+- **URL**: `/api/attempts/submit`
+- **Method**: `POST`
+- **Authentication**: Required (Student only)
+
+**Request Body**:
+```json
+{
+  "quizId": "quiz_id",
+  "answers": [
+    {
+      "questionId": "question_id_1",
+      "selectedOptionIds": ["option_id_1"]
+    },
+    {
+      "questionId": "question_id_2",
+      "selectedOptionIds": ["option_id_3", "option_id_4"]
+    }
+  ],
+  "classId": "class_id" // Optional
+}
+```
+
+**Success Response**:
+- **Code**: 201 Created
+- **Content**:
+```json
+{
+  "success": true,
+  "data": {
+    "score": 1,
+    "totalMarks": 2,
+    "percentage": 50
+  }
+}
+```
+
+**Error Responses**:
+- **Code**: 400 Bad Request
+  - **Content**: `{ "success": false, "message": "Please provide quizId and answers array" }`
+  - **Content**: `{ "success": false, "message": "You have already attempted this quiz" }`
+- **Code**: 403 Forbidden
+  - **Content**: `{ "success": false, "message": "Student is not enrolled in this class or class does not exist" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "success": false, "message": "Quiz not found" }`
+  - **Content**: `{ "success": false, "message": "Student not found" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }`
+
+### Get Student Results (Student Only)
+
+Get all quiz attempts for the logged-in student.
+
+- **URL**: `/api/attempts/student`
+- **Method**: `GET`
+- **Authentication**: Required (Student only)
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "_id": "attempt_id_1",
+      "quiz": {
+        "_id": "quiz_id_1",
+        "title": "Math Quiz",
+        "description": "Basic arithmetic quiz"
+      },
+      "classContext": {
+        "_id": "class_id",
+        "className": "Mathematics 101"
+      },
+      "score": 4,
+      "totalMarks": 5,
+      "submittedAt": "2023-07-24T15:30:45.789Z"
+    },
+    {
+      "_id": "attempt_id_2",
+      "quiz": {
+        "_id": "quiz_id_2",
+        "title": "Science Quiz",
+        "description": "Basic science concepts"
+      },
+      "classContext": {
+        "_id": "class_id",
+        "className": "Science 101"
+      },
+      "score": 3,
+      "totalMarks": 5,
+      "submittedAt": "2023-07-25T16:30:45.789Z"
+    }
+  ]
+}
+```
+
+**Error Responses**:
+- **Code**: 403 Forbidden
+  - **Content**: `{ "success": false, "message": "Access denied: Student only" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }`
+
+### Get Quiz Results for Teacher
+
+Get all quiz attempts for a specific quiz within a specific class.
+
+- **URL**: `/api/attempts/teacher/:quizId/class/:classId`
+- **Method**: `GET`
+- **Authentication**: Required (Teacher only)
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "success": true,
+  "count": 2,
+  "averageScore": 3.5,
+  "data": [
+    {
+      "_id": "attempt_id_1",
+      "student": {
+        "_id": "student_id_1",
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "score": 4,
+      "totalMarks": 5,
+      "answers": [
+        {
+          "questionId": "question_id_1",
+          "selectedOptionIds": ["option_id_1"]
+        },
+        {
+          "questionId": "question_id_2",
+          "selectedOptionIds": ["option_id_3", "option_id_4"]
+        }
+      ],
+      "submittedAt": "2023-07-24T15:30:45.789Z"
+    },
+    {
+      "_id": "attempt_id_2",
+      "student": {
+        "_id": "student_id_2",
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
+      "score": 3,
+      "totalMarks": 5,
+      "answers": [
+        {
+          "questionId": "question_id_1",
+          "selectedOptionIds": ["option_id_1"]
+        },
+        {
+          "questionId": "question_id_2",
+          "selectedOptionIds": ["option_id_4"]
+        }
+      ],
+      "submittedAt": "2023-07-25T16:30:45.789Z"
+    }
+  ]
+}
+```
+
+**Error Responses**:
+- **Code**: 403 Forbidden
+  - **Content**: `{ "success": false, "message": "Access denied: Teacher only" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "success": false, "message": "Quiz not found or you are not authorized to access this quiz" }`
+  - **Content**: `{ "success": false, "message": "Class not found or you are not authorized to access this class" }`
+- **Code**: 500 Internal Server Error
   - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }` 

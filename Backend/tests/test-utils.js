@@ -74,45 +74,66 @@ class TestRunner {
       headers: {
         'Content-Type': 'application/json',
         ...headers
-      }
+      },
+      timeout: 10000 // 10 second timeout
     };
 
+    console.log(`Making ${method} request to ${url}`);
+    
     const client = parsedUrl.protocol === 'https:' ? https : http;
 
     return new Promise((resolve, reject) => {
-      const req = client.request(options, (res) => {
-        let responseData = '';
-        res.on('data', (chunk) => {
-          responseData += chunk;
+      try {
+        const req = client.request(options, (res) => {
+          let responseData = '';
+          res.on('data', (chunk) => {
+            responseData += chunk;
+          });
+          res.on('end', () => {
+            try {
+              console.log(`Response received from ${url} with status ${res.statusCode}`);
+              const parsedData = responseData ? JSON.parse(responseData) : {};
+              resolve({
+                statusCode: res.statusCode,
+                headers: res.headers,
+                body: parsedData
+              });
+            } catch (error) {
+              console.error(`Error parsing response from ${url}:`, error.message);
+              console.error(`Raw response data: ${responseData}`);
+              resolve({
+                statusCode: res.statusCode,
+                headers: res.headers,
+                body: responseData
+              });
+            }
+          });
         });
-        res.on('end', () => {
-          try {
-            const parsedData = responseData ? JSON.parse(responseData) : {};
-            resolve({
-              statusCode: res.statusCode,
-              headers: res.headers,
-              body: parsedData
-            });
-          } catch (error) {
-            resolve({
-              statusCode: res.statusCode,
-              headers: res.headers,
-              body: responseData
-            });
+
+        req.on('error', (error) => {
+          console.error(`Request to ${url} failed:`, error.message);
+          if (error.code === 'ECONNREFUSED') {
+            console.error(`\x1b[33mConnection refused. Is the server running at ${options.hostname}:${options.port}?\x1b[0m`);
           }
+          reject(error);
         });
-      });
+        
+        req.on('timeout', () => {
+          console.error(`Request to ${url} timed out after ${options.timeout}ms`);
+          req.destroy(new Error('Request timeout'));
+        });
 
-      req.on('error', (error) => {
+        if (data) {
+          const stringData = JSON.stringify(data);
+          console.log(`Request body: ${stringData.substring(0, 200)}${stringData.length > 200 ? '...' : ''}`);
+          req.write(stringData);
+        }
+        
+        req.end();
+      } catch (error) {
+        console.error(`Error creating request to ${url}:`, error.message);
         reject(error);
-      });
-
-      if (data) {
-        const stringData = JSON.stringify(data);
-        req.write(stringData);
       }
-      
-      req.end();
     });
   }
 

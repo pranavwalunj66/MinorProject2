@@ -39,6 +39,19 @@ exports.protect = async (req, res, next) => {
   }
 };
 
+// General role-based authorization middleware
+exports.authorize = (role) => {
+  return (req, res, next) => {
+    if (req.userType !== role) {
+      return res.status(403).json({ 
+        success: false,
+        message: `Access denied: ${role} only` 
+      });
+    }
+    next();
+  };
+};
+
 // Teacher only middleware
 exports.teacherOnly = (req, res, next) => {
   if (req.userType !== 'teacher') {

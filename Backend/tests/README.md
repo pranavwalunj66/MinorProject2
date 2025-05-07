@@ -8,6 +8,8 @@ This test suite provides a way to verify the functionality of the QuizCraze API 
 - `run-tests.js`: Main script that discovers and runs all test files
 - `authentication.js`: Tests for authentication-related endpoints
 - `class-management.js`: Tests for class management functionality
+- `quiz-management.js`: Tests for quiz creation and management
+- `quiz-attempt.js`: Tests for quiz attempts and results functionality
 
 ## Running Tests
 
@@ -64,4 +66,11 @@ The current test suite covers:
 - Class creation by teachers
 - Class enrollment by students with enrollment keys
 - Listing classes for teachers and students
-- Accessing class details with proper authorization 
+- Accessing class details with proper authorization
+- Quiz creation by teachers
+- Quiz assignment to classes
+- Retrieving quizzes by teacher and by class
+- Quiz attempt submission by students
+- Score calculation based on student answers
+- Retrieving student's quiz results
+- Retrieving quiz results for teachers within their classes 
