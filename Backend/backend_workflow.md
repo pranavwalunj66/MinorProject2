@@ -114,8 +114,8 @@
 
 ## Phase 3: Quiz Management
 
--   [ ] **Quiz Model (`models/Quiz.js`)**
-    -   [ ] Define `Quiz` schema/model:
+-   [x] **Quiz Model (`models/Quiz.js`)**
+    -   [x] Define `Quiz` schema/model:
         -   `title` (String, required)
         -   `description` (String, optional)
         -   `questions` (Array of Question sub-documents)
@@ -126,39 +126,39 @@
             -   `multipleCorrectAnswers` (Boolean, default: false) // To determine if multiple options can be correct
         -   `createdBy` (ObjectId, ref: 'Teacher', required)
         -   `assignedClasses` (Array of ObjectId, ref: 'Class')
--   [ ] **Quiz Controllers (`controllers/quizController.js`)**
-    -   [ ] `createQuiz` (Teacher only):
+-   [x] **Quiz Controllers (`controllers/quizController.js`)**
+    -   [x] `createQuiz` (Teacher only):
         -   Input: `title`, `description` (optional), `questions` (array of question objects with options and correct answers).
         -   Validate input structure.
         -   Associate with the logged-in Teacher (`req.user.id`).
         -   Save new Quiz.
-    -   [ ] `assignQuizToClass` (Teacher only):
+    -   [x] `assignQuizToClass` (Teacher only):
         -   Input: `quizId`, `classId`.
         -   Verify Teacher owns the quiz and the class.
         -   Add `classId` to Quiz's `assignedClasses` array.
         -   Add `quizId` to Class's `quizzes` array.
-    -   [ ] `getQuizzesByTeacher` (Teacher only):
+    -   [x] `getQuizzesByTeacher` (Teacher only):
         -   Fetch all quizzes created by the logged-in Teacher.
-    -   [ ] `getQuizzesForClass` (Teacher/Student):
+    -   [x] `getQuizzesForClass` (Teacher/Student):
         -   Input: `classId`.
         -   Verify Student is enrolled or Teacher owns the class.
         -   Fetch quizzes assigned to that class (populate details).
-    -   [ ] `getQuizDetails` (Teacher/Student):
+    -   [x] `getQuizDetails` (Teacher/Student):
         -   Input: `quizId`.
         -   Fetch specific quiz details. For students, do not reveal `isCorrect` flag before attempt.
--   [ ] **Quiz Routes (`routes/quizRoutes.js`)**
-    -   [ ] `POST /api/quizzes` (Teacher, `authMiddleware`, `createQuiz`)
-    -   [ ] `POST /api/quizzes/:quizId/assign/:classId` (Teacher, `authMiddleware`, `assignQuizToClass`)
-    -   [ ] `GET /api/quizzes/teacher` (Teacher, `authMiddleware`, `getQuizzesByTeacher`)
-    -   [ ] `GET /api/quizzes/class/:classId` (Teacher/Student, `authMiddleware`, `getQuizzesForClass`)
-    -   [ ] `GET /api/quizzes/:quizId` (Teacher/Student, `authMiddleware`, `getQuizDetails`)
--   [ ] **Update Class Model**
-    -   [ ] Ensure `quizzes` array in `Class` model is updated correctly.
--   [ ] **Testing Phase 3**
-    -   [ ] Test Teacher creating a quiz with MCQs.
-    -   [ ] Test Teacher assigning a quiz to one or more classes.
-    -   [ ] Test fetching quizzes for a Teacher.
-    -   [ ] Test fetching quizzes available to a Student in an enrolled class (ensure correct answers are hidden).
+-   [x] **Quiz Routes (`routes/quizRoutes.js`)**
+    -   [x] `POST /api/quizzes` (Teacher, `authMiddleware`, `createQuiz`)
+    -   [x] `POST /api/quizzes/:quizId/assign/:classId` (Teacher, `authMiddleware`, `assignQuizToClass`)
+    -   [x] `GET /api/quizzes/teacher` (Teacher, `authMiddleware`, `getQuizzesByTeacher`)
+    -   [x] `GET /api/quizzes/class/:classId` (Teacher/Student, `authMiddleware`, `getQuizzesForClass`)
+    -   [x] `GET /api/quizzes/:quizId` (Teacher/Student, `authMiddleware`, `getQuizDetails`)
+-   [x] **Update Class Model**
+    -   [x] Ensure `quizzes` array in `Class` model is updated correctly.
+-   [x] **Testing Phase 3**
+    -   [x] Test Teacher creating a quiz with MCQs.
+    -   [x] Test Teacher assigning a quiz to one or more classes.
+    -   [x] Test fetching quizzes for a Teacher.
+    -   [x] Test fetching quizzes available to a Student in an enrolled class (ensure correct answers are hidden).
 
 ## Phase 4: Quiz Attempt & Results
 
