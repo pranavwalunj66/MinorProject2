@@ -1,0 +1,229 @@
+# Backend Workflow: Quizcraze (Node.js)
+
+## Phase 1: Project Setup & User Authentication
+
+-   [ ] **Initialize Node.js Project**
+    -   [ ] Create `package.json` (`npm init -y`)
+    -   [ ] Install core dependencies (Express.js, Mongoose/Sequelize, bcryptjs, jsonwebtoken, dotenv, cors)
+-   [ ] **Setup Folder Structure**
+    -   [ ] `/config` (for database connection, environment variables)
+    -   [ ] `/models` (for Mongoose/Sequelize schemas/models)
+    -   [ ] `/controllers` (for request handling logic)
+    -   [ ] `/routes` (for API endpoint definitions)
+    -   [ ] `/middleware` (for authentication, error handling, etc.)
+    -   [ ] `/utils` (for helper functions)
+-   [ ] **Environment Configuration**
+    -   [ ] Create `.env` file (for database URI, JWT secret, port, etc.)
+    -   [ ] Create `config.js` to load environment variables.
+-   [ ] **Database Setup**
+    -   [ ] Choose a database (MongoDB with Mongoose or PostgreSQL/MySQL with Sequelize)
+    -   [ ] Implement database connection logic in `config/db.js`.
+-   [ ] **User Models (Teacher & Student)**
+    -   [ ] Define `Teacher` schema/model (`name`, `email`, `password`, `createdClasses`) in `models/Teacher.js`.
+    -   [ ] Define `Student` schema/model (`name`, `email`, `password`, `enrolledClasses`, `quizAttempts`) in `models/Student.js`.
+    -   [ ] Implement password hashing for both models.
+-   [ ] **Authentication Controllers**
+    -   [ ] `registerTeacher` controller in `controllers/authController.js`:
+        -   Validate input (name, email, password).
+        -   Check if email already exists.
+        -   Hash password.
+        -   Create and save new Teacher.
+        -   Generate JWT token.
+    -   [ ] `loginTeacher` controller in `controllers/authController.js`:
+        -   Validate input (email, password).
+        -   Find Teacher by email.
+        -   Compare hashed password.
+        -   Generate JWT token.
+    -   [ ] `registerStudent` controller in `controllers/authController.js`:
+        -   Validate input (name, email, password).
+        -   Check if email already exists.
+        -   Hash password.
+        -   Create and save new Student.
+        -   Generate JWT token.
+    -   [ ] `loginStudent` controller in `controllers/authController.js`:
+        -   Validate input (email, password).
+        -   Find Student by email.
+        -   Compare hashed password.
+        -   Generate JWT token.
+-   [ ] **Authentication Routes**
+    -   [ ] Define routes in `routes/authRoutes.js`:
+        -   `POST /api/auth/teacher/register`
+        -   `POST /api/auth/teacher/login`
+        -   `POST /api/auth/student/register`
+        -   `POST /api/auth/student/login`
+-   [ ] **Authentication Middleware**
+    -   [ ] Create `authMiddleware.js` in `/middleware` to protect routes:
+        -   Verify JWT token.
+        -   Attach user information to request object (`req.user`).
+        -   Differentiate between Teacher and Student roles if necessary for certain routes.
+-   [ ] **Main App File (`server.js` or `app.js`)**
+    -   [ ] Import dependencies.
+    -   [ ] Connect to database.
+    -   [ ] Use middleware (CORS, body parser for JSON).
+    -   [ ] Mount auth routes.
+    -   [ ] Basic error handling middleware.
+    -   [ ] Start the server.
+-   [ ] **Testing Phase 1**
+    -   [ ] Test Teacher registration and login using Postman or similar tool.
+    -   [ ] Test Student registration and login.
+    -   [ ] Verify token generation and protected route access.
+
+## Phase 2: Class Management
+
+-   [ ] **Class Model**
+    -   [ ] Define `Class` schema/model in `models/Class.js`:
+        -   `className` (String, required)
+        -   `enrollmentKey` (String, unique, required)
+        -   `teacher` (ObjectId, ref: 'Teacher', required)
+        -   `students` (Array of ObjectId, ref: 'Student')
+        -   `quizzes` (Array of ObjectId, ref: 'Quiz')
+-   [ ] **Class Controllers (`controllers/classController.js`)**
+    -   [ ] `createClass` (Teacher only):
+        -   Input: `className`.
+        -   Generate a unique `enrollmentKey`.
+        -   Associate with the logged-in Teacher (`req.user.id`).
+        -   Save new Class.
+        -   Update Teacher's `createdClasses` array.
+    -   [ ] `joinClass` (Student only):
+        -   Input: `enrollmentKey`.
+        -   Find Class by `enrollmentKey`.
+        -   If Class exists and Student is not already enrolled:
+            -   Add Student's ID to Class's `students` array.
+            -   Add Class's ID to Student's `enrolledClasses` array.
+        -   Handle cases: class not found, already enrolled.
+    -   [ ] `getTeacherClasses` (Teacher only):
+        -   Fetch all classes created by the logged-in Teacher.
+    -   [ ] `getStudentClasses` (Student only):
+        -   Fetch all classes the logged-in Student is enrolled in.
+    -   [ ] `getClassDetails` (Teacher/Student, based on role and enrollment/ownership):
+        -   Fetch specific class details, potentially populating students or quizzes.
+-   [ ] **Class Routes (`routes/classRoutes.js`)**
+    -   [ ] `POST /api/classes` (Teacher, `authMiddleware`, `createClass`)
+    -   [ ] `POST /api/classes/join` (Student, `authMiddleware`, `joinClass`)
+    -   [ ] `GET /api/classes/teacher` (Teacher, `authMiddleware`, `getTeacherClasses`)
+    -   [ ] `GET /api/classes/student` (Student, `authMiddleware`, `getStudentClasses`)
+    -   [ ] `GET /api/classes/:classId` (Teacher/Student, `authMiddleware`, `getClassDetails`)
+-   [ ] **Update User Models**
+    -   [ ] Ensure `createdClasses` in `Teacher` model is updated correctly.
+    -   [ ] Ensure `enrolledClasses` in `Student` model is updated correctly.
+-   [ ] **Testing Phase 2**
+    -   [ ] Test Teacher creating a class.
+    -   [ ] Test Student joining a class with enrollment key.
+    -   [ ] Test fetching classes for both Teacher and Student dashboards.
+    -   [ ] Test edge cases (invalid key, already joined).
+
+## Phase 3: Quiz Management
+
+-   [ ] **Quiz Model (`models/Quiz.js`)**
+    -   [ ] Define `Quiz` schema/model:
+        -   `title` (String, required)
+        -   `description` (String, optional)
+        -   `questions` (Array of Question sub-documents)
+            -   `questionText` (String, required)
+            -   `options` (Array of Option sub-documents)
+                -   `optionText` (String, required)
+                -   `isCorrect` (Boolean, default: false)
+            -   `multipleCorrectAnswers` (Boolean, default: false) // To determine if multiple options can be correct
+        -   `createdBy` (ObjectId, ref: 'Teacher', required)
+        -   `assignedClasses` (Array of ObjectId, ref: 'Class')
+-   [ ] **Quiz Controllers (`controllers/quizController.js`)**
+    -   [ ] `createQuiz` (Teacher only):
+        -   Input: `title`, `description` (optional), `questions` (array of question objects with options and correct answers).
+        -   Validate input structure.
+        -   Associate with the logged-in Teacher (`req.user.id`).
+        -   Save new Quiz.
+    -   [ ] `assignQuizToClass` (Teacher only):
+        -   Input: `quizId`, `classId`.
+        -   Verify Teacher owns the quiz and the class.
+        -   Add `classId` to Quiz's `assignedClasses` array.
+        -   Add `quizId` to Class's `quizzes` array.
+    -   [ ] `getQuizzesByTeacher` (Teacher only):
+        -   Fetch all quizzes created by the logged-in Teacher.
+    -   [ ] `getQuizzesForClass` (Teacher/Student):
+        -   Input: `classId`.
+        -   Verify Student is enrolled or Teacher owns the class.
+        -   Fetch quizzes assigned to that class (populate details).
+    -   [ ] `getQuizDetails` (Teacher/Student):
+        -   Input: `quizId`.
+        -   Fetch specific quiz details. For students, do not reveal `isCorrect` flag before attempt.
+-   [ ] **Quiz Routes (`routes/quizRoutes.js`)**
+    -   [ ] `POST /api/quizzes` (Teacher, `authMiddleware`, `createQuiz`)
+    -   [ ] `POST /api/quizzes/:quizId/assign/:classId` (Teacher, `authMiddleware`, `assignQuizToClass`)
+    -   [ ] `GET /api/quizzes/teacher` (Teacher, `authMiddleware`, `getQuizzesByTeacher`)
+    -   [ ] `GET /api/quizzes/class/:classId` (Teacher/Student, `authMiddleware`, `getQuizzesForClass`)
+    -   [ ] `GET /api/quizzes/:quizId` (Teacher/Student, `authMiddleware`, `getQuizDetails`)
+-   [ ] **Update Class Model**
+    -   [ ] Ensure `quizzes` array in `Class` model is updated correctly.
+-   [ ] **Testing Phase 3**
+    -   [ ] Test Teacher creating a quiz with MCQs.
+    -   [ ] Test Teacher assigning a quiz to one or more classes.
+    -   [ ] Test fetching quizzes for a Teacher.
+    -   [ ] Test fetching quizzes available to a Student in an enrolled class (ensure correct answers are hidden).
+
+## Phase 4: Quiz Attempt & Results
+
+-   [ ] **QuizAttempt Model (`models/QuizAttempt.js`)**
+    -   [ ] Define `QuizAttempt` schema/model:
+        -   `quiz` (ObjectId, ref: 'Quiz', required)
+        -   `student` (ObjectId, ref: 'Student', required)
+        -   `answers` (Array of selected answers, structure to match quiz questions format, e.g., `[{ questionId: ObjectId, selectedOptionIds: [ObjectId] }]` or `[{ questionIndex: Number, selectedOptionIndices: [Number] }]`)
+        -   `score` (Number, calculated)
+        -   `totalMarks` (Number, from quiz)
+        -   `submittedAt` (Date, default: Date.now)
+        -   `classContext` (ObjectId, ref: 'Class', optional, if attempted within a specific class context)
+-   [ ] **Quiz Attempt Controllers (`controllers/attemptController.js`)**
+    -   [ ] `submitQuiz` (Student only):
+        -   Input: `quizId`, `answers` (student's selected options for each question), `classId` (optional).
+        -   Verify Student has not attempted this quiz before (for now).
+        -   Fetch the Quiz with correct answers.
+        -   Calculate score by comparing student's answers with correct answers.
+        -   Create and save `QuizAttempt` document.
+        -   Store reference to this attempt in `Student.quizAttempts`.
+        -   Return the result (score, correct answers for review).
+    -   [ ] `getStudentResults` (Student only):
+        -   Fetch all `QuizAttempt` records for the logged-in Student, possibly populated with quiz titles.
+    -   [ ] `getQuizResultsForTeacher` (Teacher only):
+        -   Input: `quizId`, `classId`.
+        -   Verify Teacher owns the quiz and class.
+        -   Fetch all `QuizAttempt` records for that specific quiz within that specific class.
+        -   Populate student names and scores.
+-   [ ] **Quiz Attempt Routes (`routes/attemptRoutes.js`)**
+    -   [ ] `POST /api/attempts/submit` (Student, `authMiddleware`, `submitQuiz`)
+    -   [ ] `GET /api/attempts/student` (Student, `authMiddleware`, `getStudentResults`)
+    -   [ ] `GET /api/attempts/teacher/:quizId/class/:classId` (Teacher, `authMiddleware`, `getQuizResultsForTeacher`)
+-   [ ] **Update Student Model**
+    -   [ ] Add `quizAttempts` (Array of ObjectId, ref: 'QuizAttempt') to `Student` model.
+-   [ ] **Testing Phase 4**
+    -   [ ] Test Student attempting a quiz.
+    -   [ ] Verify score calculation is correct.
+    -   [ ] Verify one-attempt-per-quiz rule (for now).
+    -   [ ] Test Student viewing their past results.
+    -   [ ] Test Teacher viewing results for a specific quiz in a specific class.
+
+## Phase 5: Refinements & Advanced Features (Future)
+
+-   [ ] **Error Handling**
+    -   [ ] Implement comprehensive error handling middleware.
+    -   [ ] Standardized error responses.
+-   [ ] **Input Validation**
+    -   [ ] Use a library like Joi or express-validator for robust input validation in all controllers.
+-   [ ] **Security Enhancements**
+    -   [ ] Rate limiting.
+    -   [ ] Helmet for security headers.
+    -   [ ] Sanitize inputs to prevent XSS, NoSQL injection.
+-   [ ] **Quiz Enhancements**
+    -   [ ] Different question types (True/False, Fill in the blanks).
+    -   [ ] Time limits for quizzes.
+    -   [ ] Multiple attempts with settings.
+    -   [ ] Shuffling questions/options.
+-   [ ] **Teacher Dashboard Enhancements**
+    -   [ ] Analytics and reporting.
+    -   [ ] Managing students in a class.
+-   [ ] **Student Dashboard Enhancements**
+    -   [ ] Detailed feedback on quiz answers.
+-   [ ] **Real-time Features (Optional)**
+    -   [ ] Live quiz sessions using WebSockets.
+-   [ ] **API Documentation**
+    -   [ ] Use Swagger/OpenAPI for API documentation.
+-   [ ] **Deployment**
+    -   [ ] Prepare for deployment (e.g., Docker, Heroku, AWS). 
