@@ -7,6 +7,7 @@ This test suite provides a way to verify the functionality of the QuizCraze API 
 - `test-utils.js`: Contains the TestRunner class with assertion methods and HTTP request functionality
 - `run-tests.js`: Main script that discovers and runs all test files
 - `authentication.js`: Tests for authentication-related endpoints
+- `class-management.js`: Tests for class management functionality
 
 ## Running Tests
 
@@ -59,4 +60,8 @@ The current test suite covers:
 - Teacher & Student login (success and error cases)
 - Protected route access with valid tokens
 - Protected route access denial with invalid or missing tokens
-- Role-based access control for teacher and student specific routes 
+- Role-based access control for teacher and student specific routes
+- Class creation by teachers
+- Class enrollment by students with enrollment keys
+- Listing classes for teachers and students
+- Accessing class details with proper authorization 

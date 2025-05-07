@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
+const classRoutes = require('./routes/classRoutes');
 
 // Connect to MongoDB
 connectDB();
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Mount routes
 app.use('/api/auth', authRoutes);
+app.use('/api/classes', classRoutes);
 
 // Default route
 app.get('/', (req, res) => {

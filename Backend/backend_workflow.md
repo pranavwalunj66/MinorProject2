@@ -70,47 +70,47 @@
 
 ## Phase 2: Class Management
 
--   [ ] **Class Model**
-    -   [ ] Define `Class` schema/model in `models/Class.js`:
-        -   `className` (String, required)
-        -   `enrollmentKey` (String, unique, required)
-        -   `teacher` (ObjectId, ref: 'Teacher', required)
-        -   `students` (Array of ObjectId, ref: 'Student')
-        -   `quizzes` (Array of ObjectId, ref: 'Quiz')
--   [ ] **Class Controllers (`controllers/classController.js`)**
-    -   [ ] `createClass` (Teacher only):
-        -   Input: `className`.
-        -   Generate a unique `enrollmentKey`.
-        -   Associate with the logged-in Teacher (`req.user.id`).
-        -   Save new Class.
-        -   Update Teacher's `createdClasses` array.
-    -   [ ] `joinClass` (Student only):
-        -   Input: `enrollmentKey`.
-        -   Find Class by `enrollmentKey`.
-        -   If Class exists and Student is not already enrolled:
-            -   Add Student's ID to Class's `students` array.
-            -   Add Class's ID to Student's `enrolledClasses` array.
-        -   Handle cases: class not found, already enrolled.
-    -   [ ] `getTeacherClasses` (Teacher only):
-        -   Fetch all classes created by the logged-in Teacher.
-    -   [ ] `getStudentClasses` (Student only):
-        -   Fetch all classes the logged-in Student is enrolled in.
-    -   [ ] `getClassDetails` (Teacher/Student, based on role and enrollment/ownership):
-        -   Fetch specific class details, potentially populating students or quizzes.
--   [ ] **Class Routes (`routes/classRoutes.js`)**
-    -   [ ] `POST /api/classes` (Teacher, `authMiddleware`, `createClass`)
-    -   [ ] `POST /api/classes/join` (Student, `authMiddleware`, `joinClass`)
-    -   [ ] `GET /api/classes/teacher` (Teacher, `authMiddleware`, `getTeacherClasses`)
-    -   [ ] `GET /api/classes/student` (Student, `authMiddleware`, `getStudentClasses`)
-    -   [ ] `GET /api/classes/:classId` (Teacher/Student, `authMiddleware`, `getClassDetails`)
--   [ ] **Update User Models**
-    -   [ ] Ensure `createdClasses` in `Teacher` model is updated correctly.
-    -   [ ] Ensure `enrolledClasses` in `Student` model is updated correctly.
--   [ ] **Testing Phase 2**
-    -   [ ] Test Teacher creating a class.
-    -   [ ] Test Student joining a class with enrollment key.
-    -   [ ] Test fetching classes for both Teacher and Student dashboards.
-    -   [ ] Test edge cases (invalid key, already joined).
+-   [x] **Class Model**
+    -   [x] Define `Class` schema/model in `models/Class.js`:
+        -   [x] `className` (String, required)
+        -   [x] `enrollmentKey` (String, unique, required)
+        -   [x] `teacher` (ObjectId, ref: 'Teacher', required)
+        -   [x] `students` (Array of ObjectId, ref: 'Student')
+        -   [x] `quizzes` (Array of ObjectId, ref: 'Quiz')
+-   [x] **Class Controllers (`controllers/classController.js`)**
+    -   [x] `createClass` (Teacher only):
+        -   [x] Input: `className`.
+        -   [x] Generate a unique `enrollmentKey`.
+        -   [x] Associate with the logged-in Teacher (`req.user.id`).
+        -   [x] Save new Class.
+        -   [x] Update Teacher's `createdClasses` array.
+    -   [x] `joinClass` (Student only):
+        -   [x] Input: `enrollmentKey`.
+        -   [x] Find Class by `enrollmentKey`.
+        -   [x] If Class exists and Student is not already enrolled:
+            -   [x] Add Student's ID to Class's `students` array.
+            -   [x] Add Class's ID to Student's `enrolledClasses` array.
+        -   [x] Handle cases: class not found, already enrolled.
+    -   [x] `getTeacherClasses` (Teacher only):
+        -   [x] Fetch all classes created by the logged-in Teacher.
+    -   [x] `getStudentClasses` (Student only):
+        -   [x] Fetch all classes the logged-in Student is enrolled in.
+    -   [x] `getClassDetails` (Teacher/Student, based on role and enrollment/ownership):
+        -   [x] Fetch specific class details, potentially populating students or quizzes.
+-   [x] **Class Routes (`routes/classRoutes.js`)**
+    -   [x] `POST /api/classes` (Teacher, `authMiddleware`, `createClass`)
+    -   [x] `POST /api/classes/join` (Student, `authMiddleware`, `joinClass`)
+    -   [x] `GET /api/classes/teacher` (Teacher, `authMiddleware`, `getTeacherClasses`)
+    -   [x] `GET /api/classes/student` (Student, `authMiddleware`, `getStudentClasses`)
+    -   [x] `GET /api/classes/:classId` (Teacher/Student, `authMiddleware`, `getClassDetails`)
+-   [x] **Update User Models**
+    -   [x] Ensure `createdClasses` in `Teacher` model is updated correctly.
+    -   [x] Ensure `enrolledClasses` in `Student` model is updated correctly.
+-   [x] **Testing Phase 2**
+    -   [x] Test Teacher creating a class.
+    -   [x] Test Student joining a class with enrollment key.
+    -   [x] Test fetching classes for both Teacher and Student dashboards.
+    -   [x] Test edge cases (invalid key, already joined).
 
 ## Phase 3: Quiz Management
 
