@@ -1424,4 +1424,89 @@ Note: The difficulty level increases because the student performed well (scored 
   - **Content**: `{ "message": "Practice session not found" }` or
   - **Content**: `{ "message": "Question bank not found" }`
 - **Code**: 500 Internal Server Error
-  - **Content**: `{ "message": "Server error", "error": "Error message here" }` 
+  - **Content**: `{ "message": "Server error", "error": "Error message here" }`
+
+## Leaderboard APIs
+
+### Get Quiz Leaderboard by Class
+
+Get a ranked list of students who have attempted a specific quiz in a specific class, sorted by score (highest first).
+
+- **URL**: `/api/leaderboards/quiz/:quizId/class/:classId`
+- **Method**: `GET`
+- **Authentication**: Required (Teacher who owns the quiz/class or Student enrolled in the class)
+- **Query Parameters**:
+  - `page`: Page number for pagination (default: 1)
+  - `limit`: Number of results per page (default: 10)
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content** (With attempts):
+```json
+{
+  "success": true,
+  "data": {
+    "leaderboard": [
+      {
+        "rank": 1,
+        "studentName": "Top Student",
+        "studentId": "student_id_1",
+        "score": 95,
+        "totalMarks": 100,
+        "submittedAt": "2023-07-01T12:30:45Z"
+      },
+      {
+        "rank": 2,
+        "studentName": "Average Student",
+        "studentId": "student_id_2",
+        "score": 75,
+        "totalMarks": 100,
+        "submittedAt": "2023-07-01T14:15:30Z"
+      },
+      {
+        "rank": 3,
+        "studentName": "Struggling Student",
+        "studentId": "student_id_3",
+        "score": 60,
+        "totalMarks": 100,
+        "submittedAt": "2023-07-01T10:45:20Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "totalAttempts": 3,
+      "totalPages": 1
+    }
+  }
+}
+```
+
+- **Content** (No attempts):
+```json
+{
+  "success": true,
+  "message": "No attempts for this quiz in this class yet",
+  "data": {
+    "leaderboard": [],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "totalAttempts": 0,
+      "totalPages": 0
+    }
+  }
+}
+```
+
+**Error Responses**:
+- **Code**: 403 Forbidden
+  - **Content**: `{ "success": false, "message": "You are not enrolled in this class" }` or
+  - **Content**: `{ "success": false, "message": "You do not have permission to view this quiz" }` or
+  - **Content**: `{ "success": false, "message": "You do not have permission to view this class" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "success": false, "message": "Quiz not found" }` or
+  - **Content**: `{ "success": false, "message": "Class not found" }` or
+  - **Content**: `{ "success": false, "message": "Quiz not found in this class" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }` 

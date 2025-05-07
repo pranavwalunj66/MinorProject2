@@ -41,6 +41,9 @@ const quizAttemptSchema = new mongoose.Schema({
   }
 });
 
+// Create compound index for optimizing leaderboard queries
+quizAttemptSchema.index({ quiz: 1, classContext: 1, score: -1, submittedAt: 1 });
+
 const QuizAttempt = mongoose.model('QuizAttempt', quizAttemptSchema);
 
 module.exports = QuizAttempt; 

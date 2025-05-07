@@ -314,4 +314,45 @@
     -   [x] Test continuous attempts and question repetition when the pool of unique questions is exhausted for a session.
     -   [x] Test error handling for invalid inputs or non-existent resources.
 
+## Phase 7: Quiz Leaderboards
+
+-   [x] **Leaderboard Logic Design (Backend Focus)**
+    -   [x] Confirm data source: `QuizAttempt` model.
+    -   [x] Define primary sorting key: `score` (descending).
+    -   [x] Define secondary tie-breaking key: `submittedAt` (ascending - earlier submission ranks higher).
+    -   [x] Define pagination strategy for API responses (e.g., using `page` and `limit` query parameters).
+-   [x] **Leaderboard Controller (`controllers/leaderboardController.js`)**
+    -   [x] Create `leaderboardController.js`.
+    -   [x] Implement `getQuizLeaderboardByClass(req, res)`:
+        -   [x] Inputs: `quizId`, `classId` (from `req.params`), `req.user` (for auth).
+        -   [x] Validate existence of `quizId` and `classId`.
+        -   [x] Permissions:
+            -   **Student**: Verify student is enrolled in the `classId` and the `quizId` is assigned to that class.
+            -   **Teacher**: Verify teacher owns the `quizId` AND owns/manages the `classId`.
+        -   [x] Data Fetching:
+            -   Query `QuizAttempt` collection.
+            -   Filter by `quiz: quizId` AND `classContext: classId`.
+            -   Populate `student` details (e.g., `name`).
+        -   [x] Sorting: Apply primary (`score` desc) and secondary (`submittedAt` asc) sorting.
+        -   [x] Implement pagination based on query parameters.
+        -   [x] Data Formatting: Transform the sorted list into a ranked list, e.g., `[{ rank: 1, studentName: "Student Name", studentId: "...", score: 95, submittedAt: "..." }, ...]`.
+        -   [x] Handle cases where no attempts exist for the quiz in the class.
+-   [x] **Leaderboard Routes (`routes/leaderboardRoutes.js`)**
+    -   [x] Create `leaderboardRoutes.js`.
+    -   [x] Define `GET /api/leaderboards/quiz/:quizId/class/:classId` route.
+        -   [x] Protect with `authMiddleware`.
+        -   [x] Map to `leaderboardController.getQuizLeaderboardByClass`.
+-   [x] **Database Optimizations**
+    -   [x] Review and add a compound index to `QuizAttempt` model to optimize leaderboard queries. Implemented: `{ quiz: 1, classContext: 1, score: -1, submittedAt: 1 }`.
+-   [x] **Update Main App File (`server.js` or `app.js`)**
+    -   [x] Import and mount `leaderboardRoutes` under an appropriate base path (e.g., `/api/leaderboards`).
+-   [x] **Backend Testing (Phase 7)**
+    -   [x] Test `GET /api/leaderboards/quiz/:quizId/class/:classId` endpoint:
+        -   [x] As a Teacher: Verify access to leaderboards for their quizzes within their classes.
+        -   [x] As a Student: Verify access to leaderboards for quizzes in their enrolled classes.
+        -   [x] Verify correct data structure, ranking, and tie-breaking logic.
+        -   [x] Test pagination (requesting different pages and limits).
+        -   [x] Test access denial for unauthorized users or non-existent resources.
+        -   [x] Test response when a quiz has no attempts in a specific class.
+
  
