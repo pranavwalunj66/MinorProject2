@@ -10,6 +10,7 @@ This test suite provides a way to verify the functionality of the QuizCraze API 
 - `class-management.js`: Tests for class management functionality
 - `quiz-management.js`: Tests for quiz creation and management
 - `quiz-attempt.js`: Tests for quiz attempts and results functionality
+- `question-bank-management.js`: Tests for question bank creation, management, and assignment
 
 ## Running Tests
 
@@ -73,4 +74,7 @@ The current test suite covers:
 - Quiz attempt submission by students
 - Score calculation based on student answers
 - Retrieving student's quiz results
-- Retrieving quiz results for teachers within their classes 
+- Retrieving quiz results for teachers within their classes
+- Question bank creation by teachers with various difficulty levels
+- Retrieving, updating, and deleting question banks
+- Assigning question banks to classes for self-practice 

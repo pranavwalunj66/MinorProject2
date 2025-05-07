@@ -200,4 +200,118 @@
     -   [x] Test Student viewing their past results.
     -   [x] Test Teacher viewing results for a specific quiz in a specific class.
 
+## Phase 5: Question Bank & Self-Practice Setup
+
+-   [x] **QuestionBank Model (`models/QuestionBank.js`)**
+    -   [x] Define `QuestionBank` schema/model:
+        -   `title` (String, required)
+        -   `description` (String, optional)
+        -   `questions` (Array of Question sub-documents - similar to Quiz model's questions)
+            -   `questionText` (String, required)
+            -   `options` (Array of Option sub-documents)
+                -   `optionText` (String, required)
+                -   `isCorrect` (Boolean, default: false)
+            -   `multipleCorrectAnswers` (Boolean, default: false)
+            -   `difficultyLevel` (Number, required, min: 1, max: 5) 
+        -   `createdBy` (ObjectId, ref: 'Teacher', required)
+        -   `assignedClasses` (Array of ObjectId, ref: 'Class')
+    -   [x] Ensure at least one question is required for a question bank.
+-   [x] **SelfPracticeProgress Model (`models/SelfPracticeProgress.js`)**
+    -   [x] Define `SelfPracticeProgress` schema/model:
+        -   `student` (ObjectId, ref: 'Student', required)
+        -   `questionBank` (ObjectId, ref: 'QuestionBank', required)
+        -   `currentAdaptiveDifficulty` (Number, default: 1)
+        -   `questionsAttemptedInSession` (Array of ObjectId, ref: 'Question' from QuestionBank) // To track questions seen in current extended session to manage repetition for a batch
+        -   `lastAttemptedAt` (Date, default: Date.now)
+    -   [x] Add compound index for `student` and `questionBank` for efficient lookups.
+-   [x] **Teacher-Side Question Bank Controllers (`controllers/questionBankController.js`)**
+    -   [x] `createQuestionBank` (Teacher only):
+        -   Input: `title`, `description` (optional), `questions` (array with `difficultyLevel`).
+        -   Validate input (title, at least one question, valid difficulty levels).
+        -   Associate with the logged-in Teacher (`req.user.id`).
+        -   Save new `QuestionBank`.
+    -   [x] `getTeacherQuestionBanks` (Teacher only):
+        -   Fetch all question banks created by the logged-in Teacher.
+    -   [x] `getQuestionBankById` (Teacher only):
+        -   Input: `questionBankId`.
+        -   Fetch specific question bank details (owned by the teacher).
+    -   [x] `updateQuestionBank` (Teacher only):
+        -   Input: `questionBankId`, fields to update (title, description, questions).
+        -   Verify Teacher owns the question bank.
+        -   Update and save.
+    -   [x] `deleteQuestionBank` (Teacher only):
+        -   Input: `questionBankId`.
+        -   Verify Teacher owns the question bank.
+        -   Delete the question bank. (Consider if associated `SelfPracticeProgress` should also be cleaned up or archived).
+    -   [x] `assignQuestionBankToClass` (Teacher only):
+        -   Input: `questionBankId`, `classId`.
+        -   Verify Teacher owns the question bank and the class.
+        -   Add `classId` to `QuestionBank`'s `assignedClasses` array.
+        -   (Optional: Add `questionBankId` to `Class`'s `availableQuestionBanks` array if modifying Class model).
+-   [x] **Teacher-Side Question Bank Routes (`routes/questionBankRoutes.js`)**
+    -   [x] `POST /api/question-banks` (Teacher, `authMiddleware`, `createQuestionBank`)
+    -   [x] `GET /api/question-banks/teacher` (Teacher, `authMiddleware`, `getTeacherQuestionBanks`)
+    -   [x] `GET /api/question-banks/:questionBankId` (Teacher, `authMiddleware`, `getQuestionBankById`)
+    -   [x] `PUT /api/question-banks/:questionBankId` (Teacher, `authMiddleware`, `updateQuestionBank`)
+    -   [x] `DELETE /api/question-banks/:questionBankId` (Teacher, `authMiddleware`, `deleteQuestionBank`)
+    -   [x] `POST /api/question-banks/:questionBankId/assign/:classId` (Teacher, `authMiddleware`, `assignQuestionBankToClass`)
+-   [x] **Update Main App File (`server.js`)**
+    -   [x] Mount `questionBankRoutes`.
+-   [x] **Initial Testing Phase 5**
+    -   [x] Test Teacher creating a question bank with various difficulty questions.
+    -   [x] Test Teacher retrieving, updating, and deleting their question banks.
+    -   [x] Test Teacher assigning a question bank to a class.
+
+## Phase 6: Student Self-Practice Adaptive Quiz Logic
+
+-   [ ] **Student-Side Self-Practice Controllers (`controllers/selfPracticeController.js`)**
+    -   [ ] `getAvailableQuestionBanks` (Student only):
+        -   Fetch all `QuestionBank`s assigned to classes the student is enrolled in.
+        -   Populate basic `QuestionBank` info (title, description).
+    -   [ ] `startOrResumePracticeSession` (Student only):
+        -   Input: `questionBankId`.
+        -   Find or create `SelfPracticeProgress` for the student and question bank.
+        -   If resuming, potentially clear `questionsAttemptedInSession` if `lastAttemptedAt` is too old (e.g., >24 hours) to reset session repetition tracking.
+        -   Call a helper function/service to get the first batch of 5 questions.
+    -   [ ] `getPracticeQuizBatch` (Helper function or part of `startOrResumePracticeSession` logic):
+        -   Input: `studentId`, `questionBankId`, `currentAdaptiveDifficulty`, `questionsAttemptedInSession` (from `SelfPracticeProgress`).
+        -   Logic:
+            -   Fetch up to 5 questions from `QuestionBank` matching `currentAdaptiveDifficulty`.
+            -   Filter out questions present in `questionsAttemptedInSession` for the current batch if possible.
+            -   If fewer than 5 questions at `currentAdaptiveDifficulty` (after filtering or in total):
+                -   Attempt to fill the remaining slots from `currentAdaptiveDifficulty + 1` then `currentAdaptiveDifficulty - 1` (or vice versa), prioritizing unseen questions.
+                -   If still fewer than 5, serve a smaller batch.
+            -   If `QuestionBank` has very few questions overall (e.g., < 5 total), return an appropriate message/status.
+            -   Return the batch of questions (without correct answers exposed to student yet).
+    -   [ ] `submitPracticeBatchAnswers` (Student only):
+        -   Input: `questionBankId`, `practiceSessionId` (or use student+QB to identify progress), `answers` (array of selected options for the batch).
+        -   Fetch the `QuestionBank` questions (with correct answers) corresponding to the batch.
+        -   Calculate score for the batch (e.g., number of correct answers out of 5).
+        -   Update `SelfPracticeProgress`:
+            -   Add attempted question IDs to `questionsAttemptedInSession`.
+            -   Adjust `currentAdaptiveDifficulty` based on score:
+                -   >=80% correct (4-5/5): difficulty + 1 (max 5).
+                -   <=20% correct (0-1/5): difficulty - 1 (min 1).
+                -   Else: difficulty same.
+            -   Update `lastAttemptedAt`.
+        -   Return score, total marks for the batch, and potentially the next batch of questions (by calling `getPracticeQuizBatch` again).
+-   [ ] **Student-Side Self-Practice Routes (`routes/selfPracticeRoutes.js`)**
+    -   [ ] `GET /api/self-practice/banks` (Student, `authMiddleware`, `getAvailableQuestionBanks`)
+    -   [ ] `POST /api/self-practice/start/:questionBankId` (Student, `authMiddleware`, `startOrResumePracticeSession`) // Could also be a GET if it just returns the first batch
+    -   [ ] `POST /api/self-practice/submit/:questionBankId` (Student, `authMiddleware`, `submitPracticeBatchAnswers`)
+-   [ ] **Update Main App File (`server.js`)**
+    -   [ ] Mount `selfPracticeRoutes`.
+-   [ ] **Error Handling & Edge Cases for Adaptive Logic**
+    -   [ ] Handle `QuestionBank` with < 5 questions overall.
+    -   [ ] Handle scenarios where a difficulty level has no questions or all have been recently attempted.
+    -   [ ] Ensure `currentAdaptiveDifficulty` stays within 1-5 bounds.
+-   [ ] **Testing Phase 6**
+    -   [ ] Test student fetching available question banks.
+    -   [ ] Test student starting a practice session and receiving the first batch (difficulty 1).
+    -   [ ] Test submitting answers for a batch and verify score calculation.
+    -   [ ] Test adaptive difficulty adjustment: increasing, decreasing, and staying the same based on performance.
+    -   [ ] Test question selection logic: preference for unseen questions, handling of small question pools at certain difficulties.
+    -   [ ] Test continuous attempts and question repetition when the pool of unique questions is exhausted for a session.
+    -   [ ] Test error handling for invalid inputs or non-existent resources.
+
  

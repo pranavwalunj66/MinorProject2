@@ -20,18 +20,32 @@ const questionSchema = new mongoose.Schema({
   multipleCorrectAnswers: {
     type: Boolean,
     default: false
+  },
+  difficultyLevel: {
+    type: Number,
+    required: [true, 'Difficulty level is required'],
+    min: 1,
+    max: 5
   }
 });
 
-const quizSchema = new mongoose.Schema({
+const questionBankSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, 'Quiz title is required']
+    required: [true, 'Question bank title is required']
   },
   description: {
     type: String
   },
-  questions: [questionSchema],
+  questions: {
+    type: [questionSchema],
+    validate: {
+      validator: function(questions) {
+        return questions.length > 0;
+      },
+      message: 'At least one question is required for a question bank'
+    }
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Teacher',
@@ -45,6 +59,6 @@ const quizSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const Quiz = mongoose.model('Quiz', quizSchema);
+const QuestionBank = mongoose.model('QuestionBank', questionBankSchema);
 
-module.exports = Quiz; 
+module.exports = QuestionBank; 

@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const classRoutes = require('./routes/classRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 const attemptRoutes = require('./routes/attemptRoutes');
+const questionBankRoutes = require('./routes/questionBankRoutes');
 
 // Connect to MongoDB
 connectDB();
@@ -27,6 +28,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/classes', classRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/attempts', attemptRoutes);
+app.use('/api/question-banks', questionBankRoutes);
 
 // Default route
 app.get('/', (req, res) => {
