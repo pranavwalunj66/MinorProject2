@@ -1,241 +1,475 @@
-# Frontend Workflow: Quizcraze (React)
+# Frontend Workflow: Quizcraze (React + Vite)
 
-## Phase 1: Project Setup & Basic Structure
+## Phase 1: Project Setup & Basic Structure (Revised)
 
--   [ ] **Initialize React Project**
-    -   [ ] Use `create-react-app` or Vite: `npx create-react-app frontend` or `npm create vite@latest frontend -- --template react`
-    -   [ ] `cd frontend`
--   [ ] **Install Core Dependencies**
-    -   [ ] `react-router-dom` (for routing)
-    -   [ ] `axios` (for API calls)
-    -   [ ] State management library (optional, e.g., Redux Toolkit, Zustand, or Context API for simpler cases)
-    -   [ ] Styling library (e.g., Tailwind CSS, Material-UI, Styled Components)
--   [ ] **Setup Folder Structure**
-    -   [ ] `/src/components` (reusable UI components: Button, Input, Modal, Card, etc.)
-        -   [ ] `/src/components/common` (general reusable components)
-        -   [ ] `/src/components/auth` (registration/login forms)
-        -   [ ] `/src/components/dashboard` (dashboard specific components)
-        -   [ ] `/src/components/quiz` (quiz related components)
-    -   [ ] `/src/pages` (top-level route components: LoginPage, RegisterPage, TeacherDashboard, StudentDashboard, etc.)
-    -   [ ] `/src/services` (API call functions, e.g., `authService.js`, `classService.js`, `quizService.js`)
-    -   [ ] `/src/contexts` or `/src/store` (for state management)
-    -   [ ] `/src/hooks` (custom React hooks)
-    -   [ ] `/src/utils` (helper functions, constants)
-    -   [ ] `/src/assets` (images, global styles)
-    -   [ ] `/src/routes` (route configuration, protected routes)
--   [ ] **Basic Routing Setup (`App.js` and `routes/index.js`)**
-    -   [ ] Define initial public routes (Login, Register for Teacher and Student).
-    -   [ ] Set up basic layout components (Navbar, Footer - if any).
+-   [x] **Initialize React Project**
+    -   [x] Project initialized with Vite: `npm create vite@latest frontend -- --template react`
+    -   [x] Using React (ensure latest stable version) and Vite (ensure latest stable version)
+-   [ ] **Complete Core Dependencies Setup**
+    -   [ ] Install `react-router-dom` (for routing): `npm install react-router-dom`
+    -   [ ] Install `axios` (for API calls): `npm install axios`
+    -   [ ] Install state management library: `npm install zustand`
+    -   [ ] Install styling library: `npm install tailwindcss postcss autoprefixer`
+    -   [ ] Initialize Tailwind CSS: `npx tailwindcss init -p`
+    -   [ ] Configure Tailwind CSS by updating `tailwind.config.js` (content paths, theme).
+    -   [ ] Install an icon library (e.g., `react-icons`): `npm install react-icons`
+    -   [ ] Install a notification/toast library (e.g., `react-toastify`): `npm install react-toastify`
+-   [ ] **Setup Project Structure**
+    -   [ ] `/src/components` (Reusable UI components)
+        -   [ ] `/src/components/ui` (Generic UI elements: Button, Input, Modal, Card, Spinner, Tooltip, etc. - styled with Tailwind)
+        -   [ ] `/src/components/layout` (Navbar, Footer, Sidebar, PageLayout, DashboardLayout)
+        -   [ ] `/src/components/auth` (LoginForm, RegisterForm, RoleSelection (for registration if needed))
+        -   [ ] `/src/components/common` (Higher-level common components, e.g., ConfirmationModal, DataTable, Breadcrumbs)
+        -   [ ] `/src/components/class` (ClassCard, CreateClassForm, JoinClassForm, ClassList)
+        -   [ ] `/src/components/quiz` (QuizCard, QuizForm (for creation/editing), QuestionForm, OptionForm, QuizAttemptView, QuizResultView)
+        -   [ ] `/src/components/questionBank` (QuestionBankCard, QuestionBankForm, PracticeQuestionView)
+        -   [ ] `/src/components/leaderboard` (LeaderboardTable)
+    -   [ ] `/src/pages` (Top-level route components: HomePage, LoginPage, RegisterPage, NotFoundPage, TeacherDashboardPage, StudentDashboardPage, CreateQuizPage, AttemptQuizPage, QuizResultsPage, ViewClassDetailsPage, CreateQuestionBankPage, PracticeSessionPage, ViewLeaderboardPage etc.)
+    -   [ ] `/src/services` (API call functions, organized by resource)
+        -   [ ] Create `api.js` (or `axiosInstance.js`) to configure Axios (baseURL from `.env`, interceptors for auth tokens and global error handling like 401).
+        -   [ ] `authService.js` (registerTeacher, loginTeacher, registerStudent, loginStudent)
+        -   [ ] `classService.js` (createClass, joinClass, getTeacherClasses, getStudentClasses, getClassDetails)
+        -   [ ] `quizService.js` (createQuiz, assignQuizToClass, getQuizzesByTeacher, getQuizzesForClass, getQuizDetailsForTeacher, getQuizForAttempt (student))
+        -   [ ] `attemptService.js` (submitQuizAttempt, getStudentQuizResults, getQuizResultsForTeacher)
+        -   [ ] `questionBankService.js` (createQuestionBank, getTeacherQuestionBanks, getQuestionBankById, updateQuestionBank, deleteQuestionBank, assignQuestionBankToClass)
+        -   [ ] `selfPracticeService.js` (getAvailableQuestionBanks, startOrResumePracticeSession, submitPracticeBatchAnswers)
+        -   [ ] `leaderboardService.js` (getQuizLeaderboardByClass)
+    -   [ ] `/src/store` (Zustand stores)
+        -   [ ] `authStore.js` (user, token, role, login, logout, register actions)
+        -   [ ] `uiStore.js` (loading states, modal states, notifications)
+        -   [ ] `teacherStore.js` (teacher's classes, quizzes, question banks)
+        -   [ ] `studentStore.js` (student's enrolled classes, quiz attempts, practice sessions)
+    -   [ ] `/src/hooks` (Custom React hooks: `useAuth.js`, `useApi.js` (generic API call hook), `useForm.js`, etc.)
+    -   [ ] `/src/utils` (Helper functions, constants, validators, formatters, enums)
+    -   [x] `/src/assets` (Images, global styles - `main.css` for Tailwind base styles and custom global styles)
+    -   [ ] `/src/routes` (Route configuration, protected routes logic: `ProtectedRoute.jsx`)
+    -   [ ] `/src/config` (Application-level configurations, e.g., API endpoint paths, role names)
+-   [ ] **Basic Routing Setup (`App.jsx` and `routes/index.jsx`)**
+    -   [ ] Implement `BrowserRouter` in `main.jsx`.
+    -   [ ] Create `App.jsx` as the main application shell (includes `ToastContainer`, main layout structure).
+    -   [ ] Create `routes/index.jsx` to define routes:
+        -   [ ] Public: `/` (HomePage - simple landing), `/login` (Unified LoginPage, role decided by backend or UI), `/register` (Unified RegisterPage or separate `/register/teacher`, `/register/student`).
+        -   [ ] Common: `/unauthorized`, `/not-found`.
+        -   [ ] Placeholder for protected routes (e.g., `/dashboard`).
+    -   [ ] Create basic placeholder components for initial pages.
 -   [ ] **Global Styles & Theme**
-    -   [ ] Implement basic global styling or theme setup if using a UI library.
+    -   [ ] Configure `tailwind.config.js` (content paths, theme: colors, fonts).
+    -   [ ] Import Tailwind base styles in `src/main.css`.
+    -   [ ] Add global notification setup (`ToastContainer` in `App.jsx`).
 -   [ ] **Environment Configuration**
-    -   [ ] Create `.env` file for API base URL (e.g., `REACT_APP_API_URL=http://localhost:5000/api` for CRA, `VITE_API_URL` for Vite).
+    -   [ ] Create `.env` and `.env.example` files.
+    -   [ ] Add `VITE_API_BASE_URL=http://localhost:5000/api` to `.env`.
+-   [ ] **Vercel Deployment Setup**
+    -   [x] Frontend already deployed on Vercel.
+    -   [ ] Configure Vercel project settings: build command (`npm run build`), output directory (`dist`), environment variables (`VITE_API_BASE_URL` for production).
+    -   [ ] Ensure automatic deployment from Git repository.
+-   [ ] **Linting and Formatting**
+    -   [ ] Setup ESLint and Prettier with recommended configurations for React/Vite.
+    -   [ ] Add npm scripts: `lint`, `format`.
 -   [ ] **Testing Phase 1**
-    -   [ ] Ensure the React app runs.
-    -   [ ] Basic navigation between placeholder pages for login/register works.
+    -   [x] App runs locally (`npm run dev`).
+    -   [ ] Basic navigation between placeholder pages works.
+    -   [ ] Simple change deploys to Vercel.
+    -   [ ] Environment variables are accessible.
+    -   [ ] Basic Tailwind styling is applied.
+    -   [ ] Linters and formatters run correctly.
 
 ## Phase 2: User Authentication (Teacher & Student)
 
--   [ ] **Authentication Service (`services/authService.js`)**
-    -   [ ] `registerTeacher(name, email, password)` function.
-    -   [ ] `loginTeacher(email, password)` function.
-    -   [ ] `registerStudent(name, email, password)` function.
-    -   [ ] `loginStudent(email, password)` function.
-    -   [ ] `logout()` function (clears token from storage).
--   [ ] **Authentication State Management (Context API or Redux/Zustand)**
-    -   [ ] Store user info (token, role, name, email).
-    -   [ ] Actions/reducers for login, register, logout.
-    -   [ ] Persist auth state (e.g., in localStorage).
--   [ ] **Registration Pages**
-    -   [ ] `TeacherRegisterPage.js` (`pages/TeacherRegisterPage.js`)
-        -   Form with name, email, password fields.
-        -   Call `authService.registerTeacher`.
-        -   Handle success (redirect to login or dashboard) and errors.
-    -   [ ] `StudentRegisterPage.js` (`pages/StudentRegisterPage.js`)
-        -   Form with name, email, password fields.
-        -   Call `authService.registerStudent`.
-        -   Handle success and errors.
--   [ ] **Login Pages**
-    -   [ ] `TeacherLoginPage.js` (`pages/TeacherLoginPage.js`)
-        -   Form with email, password fields.
-        -   Call `authService.loginTeacher`.
-        -   On success, store token, user info, and redirect to Teacher Dashboard.
-        -   Handle errors.
-    -   [ ] `StudentLoginPage.js` (`pages/StudentLoginPage.js`)
-        -   Form with email, password fields.
-        -   Call `authService.loginStudent`.
-        -   On success, store token, user info, and redirect to Student Dashboard.
-        -   Handle errors.
--   [ ] **UI Components for Auth (`components/auth`)**
-    -   [ ] Reusable `AuthForm` component (or separate `LoginForm`, `RegisterForm`).
-    -   [ ] Input fields, buttons with appropriate styling.
--   [ ] **Protected Routes (`routes/ProtectedRoutes.js`)**
-    -   [ ] Create components for `ProtectedRouteTeacher` and `ProtectedRouteStudent`.
-    -   [ ] Check for valid token and correct user role from auth state.
-    -   [ ] Redirect to login if not authenticated or wrong role.
--   [ ] **Update Routing (`App.js` or `routes/index.js`)**
-    -   [ ] Implement routes for dashboards, protected by `ProtectedRouteTeacher` / `ProtectedRouteStudent`.
-    -   [ ] Implement logout functionality (e.g., in a Navbar).
+-   [ ] **Services (`authService.js`)**
+    -   [ ] Implement `registerTeacher(name, email, password)` using `/api/auth/teacher/register`.
+    -   [ ] Implement `loginTeacher(email, password)` using `/api/auth/teacher/login`.
+    -   [ ] Implement `registerStudent(name, email, password)` using `/api/auth/student/register`.
+    -   [ ] Implement `loginStudent(email, password)` using `/api/auth/student/login`.
+    -   [ ] Centralize API call logic in `axiosInstance.js` to attach token and handle errors.
+-   [ ] **State Management (`authStore.js`)**
+    -   [ ] Store: `user` (object: `_id`, `name`, `email`, `role`), `token`, `isAuthenticated`, `isLoading`.
+    -   [ ] Actions: `loginUser(credentials, role)`, `registerUser(userData, role)`, `logoutUser`.
+    -   [ ] Persist auth state (token, user) to `localStorage` and rehydrate on app load.
+    -   [ ] `axiosInstance.js` should use token from this store.
+-   [ ] **UI Components (`components/auth`)**
+    -   [ ] `LoginForm.jsx`: Email, password fields. Handles submit, calls `authStore.loginUser`.
+    -   [ ] `RegisterForm.jsx`: Name, email, password fields. Handles submit, calls `authStore.registerUser`.
+    -   [ ] Consider a role selection mechanism if using unified login/register pages.
+-   [ ] **Pages (`pages/auth`)**
+    -   [ ] `LoginPage.jsx`: Renders `LoginForm`. Option to switch between Teacher/Student login or unified.
+    -   [ ] `RegisterPage.jsx`: Renders `RegisterForm`. Option to switch between Teacher/Student registration or unified.
+-   [ ] **Protected Routes (`routes/ProtectedRoute.jsx`)**
+    -   [ ] Component that checks `authStore.isAuthenticated` and `authStore.user.role`.
+    -   [ ] Redirects to `/login` if not authenticated.
+    -   [ ] Redirects to `/unauthorized` or `/` if authenticated but wrong role for a specific route.
+-   [ ] **Routing Updates (`routes/index.jsx`)**
+    -   [ ] Define dashboard routes for teacher and student, protected by `ProtectedRoute.jsx` with role checks.
+        -   e.g., `/teacher/dashboard`, `/student/dashboard`.
+    -   [ ] Redirect from `/login`, `/register` if already authenticated.
+-   [ ] **Logout Functionality**
+    -   [ ] Logout button (e.g., in Navbar) calls `authStore.logoutUser`, clears state/localStorage, redirects to `/login` or `/`.
 -   [ ] **Testing Phase 2**
-    -   [ ] Test Teacher registration and login flow.
-    -   [ ] Test Student registration and login flow.
-    -   [ ] Verify redirection after login/logout.
-    -   [ ] Test access to protected dashboard routes (should fail if not logged in, or wrong role).
-    -   [ ] Check error handling on forms (e.g., invalid email, incorrect password).
+    -   [ ] Teacher registration and login flow. Redirect to teacher dashboard.
+    -   [ ] Student registration and login flow. Redirect to student dashboard.
+    -   [ ] Invalid login/registration attempts show appropriate error messages (from API, handled by `uiStore` or locally).
+    -   [ ] Logout functionality works.
+    -   [ ] Protected routes:
+        -   [ ] Accessible when logged in with correct role.
+        -   [ ] Redirect to login if not authenticated.
+        -   [ ] Redirect to unauthorized/home if wrong role.
+    -   [ ] Auth state persistence across page refreshes.
+    -   [ ] Token is sent with subsequent API requests (verify in network tab for later phases).
 
-## Phase 3: Teacher Dashboard & Class Management
+## Phase 3: Core Layout & Navigation
 
--   [ ] **Teacher Dashboard Page (`pages/TeacherDashboardPage.js`)**
-    -   [ ] Layout for displaying created classes, options to create new class, view quizzes.
--   [ ] **Class Service (`services/classService.js`)**
-    -   [ ] `createClass(className)` function (sends token in header).
-    -   [ ] `getTeacherClasses()` function (sends token).
-    -   [ ] `getClassDetails(classId)` function.
--   [ ] **Teacher Dashboard Components (`components/dashboard/teacher`)**
-    -   [ ] `CreateClassModal.js` or `CreateClassForm.js`:
-        -   Input for `className`.
-        -   Submit button calls `classService.createClass`.
-    -   [ ] `ClassList.js` / `ClassCard.js`:
-        -   Display list of classes (name, enrollment key, number of students - future).
-        -   Option to view class details/assigned quizzes.
--   [ ] **State Management for Teacher Classes**
-    -   [ ] Fetch and store teacher's classes on dashboard load.
-    -   [ ] Update list after creating a new class.
--   [ ] **Class Details View (Optional for now, or part of Quiz assignment)**
-    -   [ ] Page/modal to show students in a class, quizzes assigned.
+-   [ ] **Components (`components/layout`)**
+    -   [ ] `Navbar.jsx`:
+        -   Displays application logo/name.
+        -   Conditional links based on `authStore.isAuthenticated` and `authStore.user.role`:
+            -   Not Authenticated: Login, Register.
+            -   Authenticated Student: Dashboard, My Classes, Logout.
+            -   Authenticated Teacher: Dashboard, My Classes, My Quizzes, My Question Banks, Logout.
+        -   User's name displayed when logged in.
+    -   [ ] `Footer.jsx`: Basic footer content (copyright, etc.).
+    -   [ ] `PageLayout.jsx`: A general wrapper for pages that includes Navbar and Footer.
+    -   [ ] `DashboardLayout.jsx`: Wrapper for dashboard pages, potentially including a sidebar navigation for dashboard sections.
+-   [ ] **Routing (`App.jsx`, `routes/index.jsx`)**
+    -   [ ] Integrate `PageLayout` for general public pages.
+    -   [ ] Integrate `DashboardLayout` for teacher and student dashboard routes.
+    -   [ ] Create placeholder dashboard pages (`TeacherDashboardPage.jsx`, `StudentDashboardPage.jsx`).
+-   [ ] **UI Enhancements**
+    -   [ ] Add loading indicators (`Spinner.jsx` from `components/ui`) globally via `uiStore.isLoading` or locally on pages/components.
+    -   [ ] Implement notification system using `react-toastify` for success/error messages triggered via `uiStore` or directly.
 -   [ ] **Testing Phase 3**
-    -   [ ] Teacher can view their dashboard.
-    -   [ ] Teacher can create a new class.
-        -   Verify the new class appears on the dashboard with an enrollment key.
-    -   [ ] Data persistence for classes.
+    -   [ ] Navbar displays correctly for unauthenticated users.
+    -   [ ] Navbar displays correctly for logged-in students with student-specific links.
+    -   [ ] Navbar displays correctly for logged-in teachers with teacher-specific links.
+    -   [ ] Logout button works from Navbar.
+    -   [ ] Footer is present.
+    -   [ ] Placeholder dashboard pages are accessible and use `DashboardLayout`.
+    -   [ ] Global loading indicators and notifications can be triggered (manually for now).
 
-## Phase 4: Student Dashboard & Class Enrollment
+## Phase 4: Teacher Dashboard & Class Management
 
--   [ ] **Student Dashboard Page (`pages/StudentDashboardPage.js`)**
-    -   [ ] Layout for displaying enrolled classes, option to join new class, view available quizzes.
--   [ ] **Update Class Service (`services/classService.js`)**
-    -   [ ] `joinClass(enrollmentKey)` function (sends token).
-    -   [ ] `getStudentClasses()` function (sends token).
--   [ ] **Student Dashboard Components (`components/dashboard/student`)**
-    -   [ ] `JoinClassModal.js` or `JoinClassForm.js`:
-        -   Input for `enrollmentKey`.
-        -   Submit button calls `classService.joinClass`.
-    -   [ ] `EnrolledClassList.js` / `EnrolledClassCard.js`:
-        -   Display list of enrolled classes (name, teacher name - future).
-        -   Option to view available quizzes in that class.
--   [ ] **State Management for Student Classes**
-    -   [ ] Fetch and store student's enrolled classes on dashboard load.
-    -   [ ] Update list after joining a new class.
+-   [ ] **Services (`classService.js`)**
+    -   [ ] `createClass(className)`: POST `/api/classes`.
+    -   [ ] `getTeacherClasses()`: GET `/api/classes/teacher`.
+    -   [ ] `getClassDetails(classId)`: GET `/api/classes/:classId`. (Will be enhanced later to show students, quizzes)
+-   [ ] **State Management (`teacherStore.js`)**
+    -   [ ] Store: `classes` (array), `currentClass` (object), `isLoadingClasses`.
+    -   [ ] Actions: `fetchTeacherClasses()`, `addClass(className)`, `fetchClassDetails(classId)`.
+-   [ ] **Pages (`pages/teacher`)**
+    -   [ ] `TeacherDashboardPage.jsx`:
+        -   Displays a list of classes created by the teacher (`ClassList.jsx`).
+        -   Button/link to "Create New Class" (opens `CreateClassModal.jsx`).
+-   [ ] **Components (`components/class`, `components/ui`)**
+    -   [ ] `ClassList.jsx`: Renders `ClassCard.jsx` for each class.
+    -   [ ] `ClassCard.jsx`: Displays class name, enrollment key. Links to view class details/manage.
+    -   [ ] `CreateClassForm.jsx` (or `CreateClassModal.jsx` using `Modal.jsx` from `components/ui`):
+        -   Input for `className`.
+        -   Submit button calls `teacherStore.addClass`.
+-   [ ] **Routing (`routes/index.jsx`)**
+    -   [ ] `/teacher/dashboard` maps to `TeacherDashboardPage.jsx`.
+    -   [ ] (Optional) `/teacher/class/:classId` for `ViewClassDetailsPage.jsx`.
 -   [ ] **Testing Phase 4**
-    -   [ ] Student can view their dashboard.
-    -   [ ] Student can join a class using a valid enrollment key.
-        -   Verify the new class appears on their dashboard.
-    -   [ ] Test joining with invalid/non-existent key.
-    -   [ ] Test attempting to join a class already enrolled in.
+    -   [ ] Logged-in teacher sees their dashboard.
+    -   [ ] Teacher can create a new class; it appears on their dashboard with an enrollment key.
+    -   [ ] Existing classes are listed on dashboard load.
+    -   [ ] API calls for creating and fetching classes are successful (check network tab & backend logs).
+    -   [ ] Error handling for class creation (e.g., empty name if validated by backend).
+    -   [ ] Loading states are shown while fetching/creating classes.
 
-## Phase 5: Quiz Creation & Assignment (Teacher)
+## Phase 5: Student Dashboard & Class Enrollment
 
--   [ ] **Quiz Service (`services/quizService.js`)**
-    -   [ ] `createQuiz(quizData)` function.
-    -   [ ] `assignQuizToClass(quizId, classId)` function.
-    -   [ ] `getQuizzesByTeacher()` function.
-    -   [ ] `getQuizDetailsForTeacher(quizId)` function.
--   [ ] **Quiz Creation Page/Modal (`pages/CreateQuizPage.js` or component within Teacher Dashboard)**
-    -   [ ] Form for quiz `title`, `description`.
-    -   [ ] Dynamic form for adding questions (Question Text).
-    -   [ ] Dynamic form for adding options to each question (Option Text, `isCorrect` checkbox).
-        -   Handle single/multiple correct answers selection logic if `multipleCorrectAnswers` is true.
-    -   [ ] Submit button calls `quizService.createQuiz`.
--   [ ] **View Teacher's Quizzes (Component in Teacher Dashboard)**
-    -   [ ] List quizzes created by the teacher (`QuizList.js`).
-    -   [ ] Option to view/edit quiz (edit is future).
-    -   [ ] Option to assign quiz to classes.
--   [ ] **Assign Quiz to Class UI**
-    -   [ ] Modal or section when viewing a quiz or a class.
-    -   [ ] Select from available classes to assign the quiz.
-    -   [ ] Calls `quizService.assignQuizToClass`.
--   [ ] **State Management for Teacher's Quizzes**
-    -   [ ] Fetch and store quizzes.
-    -   [ ] Update list after creating a new quiz.
+-   [ ] **Services (`classService.js`)**
+    -   [ ] `joinClass(enrollmentKey)`: POST `/api/classes/join`.
+    -   [ ] `getStudentClasses()`: GET `/api/classes/student`.
+-   [ ] **State Management (`studentStore.js`)**
+    -   [ ] Store: `enrolledClasses` (array), `isLoadingEnrolledClasses`.
+    -   [ ] Actions: `fetchStudentClasses()`, `joinNewClass(enrollmentKey)`.
+-   [ ] **Pages (`pages/student`)**
+    -   [ ] `StudentDashboardPage.jsx`:
+        -   Displays a list of classes the student is enrolled in (`EnrolledClassList.jsx`).
+        -   Button/link to "Join New Class" (opens `JoinClassModal.jsx`).
+-   [ ] **Components (`components/class`, `components/ui`)**
+    -   [ ] `EnrolledClassList.jsx`: Renders `EnrolledClassCard.jsx` for each class.
+    -   [ ] `EnrolledClassCard.jsx`: Displays class name, teacher name (if available from API). Links to view class details/quizzes.
+    -   [ ] `JoinClassForm.jsx` (or `JoinClassModal.jsx`):
+        -   Input for `enrollmentKey`.
+        -   Submit button calls `studentStore.joinNewClass`.
+-   [ ] **Routing (`routes/index.jsx`)**
+    -   [ ] `/student/dashboard` maps to `StudentDashboardPage.jsx`.
+    -   [ ] (Optional) `/student/class/:classId` for viewing quizzes in a class.
 -   [ ] **Testing Phase 5**
-    -   [ ] Teacher can access the quiz creation interface.
-    -   [ ] Teacher can create a quiz with multiple questions and MCQs (text-only).
-    -   [ ] Teacher can mark correct option(s) for each question.
-    -   [ ] Created quiz appears in the teacher's list of quizzes.
-    -   [ ] Teacher can assign a quiz to one or more of their created classes.
+    -   [ ] Logged-in student sees their dashboard.
+    -   [ ] Student can join a class using a valid enrollment key; it appears on their dashboard.
+    -   [ ] Existing enrolled classes are listed on dashboard load.
+    -   [ ] API calls for joining and fetching classes are successful.
+    -   [ ] Error handling for joining class (invalid key, already enrolled, API errors).
+    -   [ ] Loading states are shown while fetching/joining classes.
 
-## Phase 6: Student Quiz Taking & Results
+## Phase 6: Teacher Quiz Management - Creation & Listing
 
--   [ ] **Update Quiz Service (`services/quizService.js`)**
-    -   [ ] `getQuizzesForClassStudent(classId)` function (to list quizzes for a student in a class).
-    -   [ ] `getQuizForAttempt(quizId)` function (fetches quiz without answers for student to attempt).
--   [ ] **Attempt Service (`services/attemptService.js`)**
-    -   [ ] `submitQuizAttempt(quizId, answers, classId)` function.
-    -   [ ] `getStudentQuizResults()` function.
--   [ ] **View Available Quizzes (Student Dashboard/Class View)**
-    -   [ ] When a student views an enrolled class, list assigned quizzes (`AvailableQuizzesList.js`).
-    -   [ ] Each quiz should have a "Start Quiz" or "View Quiz" button.
--   [ ] **Quiz Attempt Page (`pages/AttemptQuizPage.js`)**
-    -   [ ] Fetch quiz data (questions, options) using `quizService.getQuizForAttempt`.
-    -   [ ] Display one question at a time or all questions on a page.
-    -   [ ] For each question, display options (radio buttons for single correct, checkboxes for multiple correct).
-    -   [ ] Collect student's answers.
-    -   [ ] Submit button calls `attemptService.submitQuizAttempt`.
-    -   [ ] Implement "once per attempt" logic (disable re-attempt or check on backend).
--   [ ] **Quiz Result Display Page/Modal (`pages/QuizResultPage.js` or component)**
-    -   [ ] After submission, display score, total marks.
-    -   [ ] Show questions, selected answers, and correct answers for review.
--   [ ] **Student Results History (Component in Student Dashboard)**
-    -   [ ] List of attempted quizzes with scores (`AttemptHistory.js`).
-    -   [ ] Option to view detailed results of a past attempt.
--   [ ] **State Management for Student Quiz Attempts & Results**
-    -   [ ] Store current quiz being attempted.
-    -   [ ] Store results after submission.
-    -   [ ] Fetch and store past attempt history.
+-   [ ] **Services (`quizService.js`)**
+    -   [ ] `createQuiz(quizData)`: POST `/api/quizzes`.
+        -   `quizData`: `{ title, description, questions: [{ questionText, options: [{ optionText, isCorrect }], multipleCorrectAnswers }] }`.
+    -   [ ] `getQuizzesByTeacher()`: GET `/api/quizzes/teacher`.
+    -   [ ] `getQuizDetailsForTeacher(quizId)`: GET `/api/quizzes/:quizId` (teacher version with answers).
+-   [ ] **State Management (`teacherStore.js`)**
+    -   [ ] Store: Add `quizzes` (array), `currentQuiz` (object), `isLoadingQuizzes`.
+    -   [ ] Actions: `fetchTeacherQuizzes()`, `addQuiz(quizData)`, `fetchQuizDetailsForTeacher(quizId)`.
+-   [ ] **Pages (`pages/teacher`)**
+    -   [ ] `CreateQuizPage.jsx`:
+        -   Form for quiz `title`, `description`.
+        -   Dynamic form (`QuizForm.jsx`) for adding/editing questions (`QuestionForm.jsx`).
+            -   Each question has text, options (`OptionForm.jsx` - text, `isCorrect` checkbox), and `multipleCorrectAnswers` toggle.
+        -   Submit button calls `teacherStore.addQuiz`.
+    -   [ ] `TeacherQuizzesPage.jsx` (or section in Teacher Dashboard):
+        -   Lists quizzes created by the teacher (`QuizList.jsx`).
+        -   Link to `CreateQuizPage.jsx`.
+-   [ ] **Components (`components/quiz`, `components/ui`)**
+    -   [ ] `QuizList.jsx`: Renders `QuizCard.jsx` for each quiz.
+    -   [ ] `QuizCard.jsx` (teacher version): Displays quiz title, number of questions. Options to View/Edit (future), Assign to Class, View Results.
+    -   [ ] `QuizForm.jsx`: Main wrapper for quiz creation/editing.
+    -   [ ] `QuestionForm.jsx`: Manages a single question's state (text, options, multipleCorrectAnswers).
+    -   [ ] `OptionForm.jsx`: Manages a single option's state (text, isCorrect).
+-   [ ] **Routing (`routes/index.jsx`)**
+    -   [ ] `/teacher/quizzes` maps to `TeacherQuizzesPage.jsx`.
+    -   [ ] `/teacher/quizzes/create` maps to `CreateQuizPage.jsx`.
+    -   [ ] `/teacher/quizzes/:quizId/edit` (future).
 -   [ ] **Testing Phase 6**
-    -   [ ] Student can see quizzes assigned to their enrolled classes.
-    -   [ ] Student can attempt a quiz.
-        -   Verify questions and options are displayed correctly.
-        -   Student can select answers.
-    -   [ ] Student can submit the quiz.
-    -   [ ] Student sees their score and detailed results immediately after submission.
-    -   [ ] Student can view their history of attempted quizzes and scores on their dashboard.
-    -   [ ] Test the "attempt once" rule.
+    -   [ ] Teacher can navigate to quiz creation page.
+    -   [ ] Teacher can create a quiz with:
+        -   Title and description.
+        -   Multiple questions.
+        -   Multiple options per question.
+        -   Mark correct option(s) for each question (single and multiple choice).
+    -   [ ] Created quiz appears in the teacher's list of quizzes.
+    -   [ ] API call for `createQuiz` is successful with correct payload.
+    -   [ ] API call for `getQuizzesByTeacher` loads quizzes.
+    -   [ ] Form validation (e.g., at least one question, one correct option per question).
+    -   [ ] Dynamic adding/removing of questions and options works.
 
-## Phase 7: Teacher Viewing Student Results
+## Phase 7: Teacher Quiz Management - Assignment & Class Integration
 
--   [ ] **Update Attempt Service (`services/attemptService.js`)**
-    -   [ ] `getQuizResultsForTeacher(quizId, classId)` function.
--   [ ] **View Quiz Results in Class (Teacher Dashboard)**
-    -   [ ] In Teacher's view of a class, or a specific quiz, provide an option to "View Results".
-    -   [ ] Fetch results using `attemptService.getQuizResultsForTeacher`.
-    -   [ ] Display a list/table of students who attempted the quiz, their scores, and submission times (`StudentResultsTable.js`).
-    -   [ ] Option to view individual student's answers (future enhancement).
--   [ ] **State Management for Teacher Viewing Results**
-    -   [ ] Fetch and display results for a selected quiz and class.
+-   [ ] **Services (`quizService.js`, `classService.js`)**
+    -   [ ] `assignQuizToClass(quizId, classId)`: POST `/api/quizzes/:quizId/assign/:classId`.
+    -   [ ] Enhance `classService.getClassDetails(classId)` to populate assigned quizzes for a class if backend supports.
+-   [ ] **State Management (`teacherStore.js`)**
+    -   [ ] Actions: `assignQuiz(quizId, classId)`.
+    -   [ ] Update `currentClass` or `classes` state when a quiz is assigned if necessary to reflect changes immediately.
+-   [ ] **UI Components (`components/quiz`, `components/class`)**
+    -   [ ] `AssignQuizToClassModal.jsx`:
+        -   Opened from `QuizCard.jsx` or `ClassDetailsPage.jsx`.
+        -   Displays a list of teacher's classes (selectable, e.g., checkboxes or multi-select dropdown).
+        -   Submit calls `teacherStore.assignQuiz`.
+    -   [ ] `ViewClassDetailsPage.jsx` (can be a new page or modal):
+        -   Displays class name, enrollment key, list of students (future).
+        -   Lists quizzes assigned to this class. Option to unassign (future).
+        -   Button to "Assign New Quiz" to this class.
+-   [ ] **Updates to Existing Components/Pages**
+    -   [ ] `QuizCard.jsx`: Add "Assign to Class" button.
+    -   [ ] `ClassCard.jsx` (Teacher View): Link to `ViewClassDetailsPage.jsx`.
+    -   `TeacherDashboardPage.jsx` or `TeacherClassesPage.jsx`: clicking a class navigates to its details/management view.
 -   [ ] **Testing Phase 7**
-    -   [ ] Teacher can select a quiz within a class they own.
-    -   [ ] Teacher can view a summary of results for that quiz (list of students, scores).
-    -   [ ] Verify correct data is displayed for the correct quiz and class.
+    -   [ ] Teacher can select a quiz and assign it to one or more of their classes.
+    -   [ ] Assigned quiz appears in the relevant class details view.
+    -   [ ] API call for `assignQuizToClass` is successful.
+    -   [ ] Error handling (e.g., quiz already assigned, invalid class/quiz ID).
+    -   [ ] UI updates correctly after assignment.
 
-## Phase 8: UI/UX Refinements & Advanced Features (Future)
+## Phase 8: Student Quiz Access & Attempt
 
--   [ ] **Consistent UI/UX**
-    -   [ ] Ensure consistent design, colors, typography.
-    -   [ ] Responsive design for different screen sizes.
+-   [ ] **Services (`quizService.js`, `attemptService.js`)**
+    -   [ ] `getQuizzesForClassStudent(classId)`: GET `/api/quizzes/class/:classId` (student version, no answers).
+    -   [ ] `getQuizForAttempt(quizId)`: GET `/api/quizzes/:quizId` (student version, no answers).
+    -   [ ] `submitQuizAttempt(quizId, answers, classId)`: POST `/api/attempts/submit`.
+        -   `answers`: `[{ questionId, selectedOptionIds: [optionId] }]` (align with backend).
+-   [ ] **State Management (`studentStore.js`)**
+    -   [ ] Store: `quizzesForClass` (array), `currentQuizAttempt` (object: quiz data, student answers), `isLoadingQuizAttempt`.
+    -   [ ] Actions: `fetchQuizzesForClass(classId)`, `startQuizAttempt(quizId)`, `updateStudentAnswer(questionId, selectedOptionIds)`, `submitAttempt()`.
+-   [ ] **Pages (`pages/student`)**
+    -   [ ] `StudentClassDetailsPage.jsx` (or section in Student Dashboard when a class is selected):
+        -   Lists quizzes assigned to this class (`AvailableQuizzesList.jsx`).
+    -   [ ] `AttemptQuizPage.jsx`:
+        -   Fetches quiz data using `studentStore.startQuizAttempt`.
+        -   Displays one question at a time or all questions.
+        -   For each question: displays text, options (radio buttons for single-correct, checkboxes for multiple-correct).
+        -   Collects student's answers, updates `studentStore.currentQuizAttempt`.
+        -   "Submit Quiz" button calls `studentStore.submitAttempt`.
+-   [ ] **Components (`components/quiz`, `components/class`)**
+    -   [ ] `AvailableQuizzesList.jsx`: Renders `QuizCard.jsx` (student version) for each quiz.
+    -   [ ] `QuizCard.jsx` (student version): Displays quiz title, description. "Start Quiz" button (navigates to `AttemptQuizPage.jsx`). Shows "Attempted" if already done.
+    -   [ ] `QuizAttemptView.jsx`: Renders the quiz questions and options for the student to interact with.
+-   [ ] **Routing (`routes/index.jsx`)**
+    -   [ ] `/student/class/:classId` maps to `StudentClassDetailsPage.jsx`.
+    -   [ ] `/student/quiz/:quizId/attempt` maps to `AttemptQuizPage.jsx`.
+-   [ ] **Testing Phase 8**
+    -   [ ] Student can see quizzes assigned to their enrolled classes.
+    -   [ ] Student can start an unattempted quiz.
+    -   [ ] `AttemptQuizPage.jsx` displays questions and options correctly (no answers visible).
+    -   [ ] Student can select answers (single/multiple).
+    -   [ ] Student can submit the quiz. API call to `/api/attempts/submit` is made with correct payload.
+    -   [ ] Logic to prevent re-attempting an already submitted quiz (UI check, backend enforces). Backend "You have already attempted this quiz" message should be handled.
+    -   [ ] Loading states while fetching quiz and submitting answers.
+
+## Phase 9: Student Quiz Results & History
+
+-   [ ] **Services (`attemptService.js`)**
+    -   [ ] `getStudentQuizResults()`: GET `/api/attempts/student`. (Fetches all attempts by the student)
+    -   [ ] (If needed) `getSpecificAttemptDetails(attemptId)`: Backend might provide this, or `submitQuizAttempt` response is used.
+-   [ ] **State Management (`studentStore.js`)**
+    -   [ ] Store: `quizAttemptsHistory` (array), `lastAttemptResult` (object), `isLoadingHistory`.
+    -   [ ] Actions: `fetchStudentAttemptsHistory()`. Store result from `submitAttempt()` in `lastAttemptResult`.
+-   [ ] **Pages (`pages/student`)**
+    -   [ ] `QuizResultPage.jsx`:
+        -   Displayed immediately after submitting an attempt.
+        -   Shows score (`score`, `totalMarks`, `percentage` from API response).
+        -   Ideally, shows questions, student's selected answers, and correct answers for review (if backend provides this detailed feedback post-attempt).
+    -   [ ] `StudentAttemptsHistoryPage.jsx` (or section in Student Dashboard):
+        -   Lists all past quiz attempts by the student (`AttemptHistoryList.jsx`).
+-   [ ] **Components (`components/quiz`)**
+    -   [ ] `QuizResultView.jsx`: Component to display the detailed results on `QuizResultPage.jsx`.
+    -   [ ] `AttemptHistoryList.jsx`: Renders `AttemptHistoryCard.jsx` for each attempt.
+    -   [ ] `AttemptHistoryCard.jsx`: Displays quiz title, score, date attempted. Option to "View Details" (if detailed review of past attempts is supported).
+-   [ ] **Routing (`routes/index.jsx`)**
+    -   [ ] `/student/quiz/result/:attemptId` (or just `/student/quiz/result` if using state for last attempt) maps to `QuizResultPage.jsx`.
+    -   [ ] `/student/attempts` maps to `StudentAttemptsHistoryPage.jsx`.
+-   [ ] **Testing Phase 9**
+    -   [ ] After submitting a quiz, student sees their score and detailed results.
+    -   [ ] Student can view their history of attempted quizzes and scores on their dashboard/history page.
+    -   [ ] API calls for `getStudentQuizResults` are successful.
+    -   [ ] Data is displayed correctly in the history list and result page.
+
+## Phase 10: Teacher Viewing Student Results for Quizzes
+
+-   [ ] **Services (`attemptService.js`)**
+    -   [ ] `getQuizResultsForTeacher(quizId, classId)`: GET `/api/attempts/teacher/:quizId/class/:classId`.
+-   [ ] **State Management (`teacherStore.js`)**
+    -   [ ] Store: `quizSubmissionsForClass` (object or array), `isLoadingSubmissions`.
+    -   [ ] Actions: `fetchQuizSubmissions(quizId, classId)`.
+-   [ ] **Pages (`pages/teacher`)**
+    -   [ ] `ViewQuizResultsPage.jsx` (Teacher):
+        -   Accessed from `QuizCard.jsx` (teacher version) or `ClassDetailsPage.jsx`.
+        -   Displays a summary (average score if available from API).
+        -   Lists students who attempted the quiz, their scores, submission times (`StudentResultsTable.jsx`).
+        -   Option to view individual student's detailed answers (if backend supports and is implemented).
+-   [ ] **Components (`components/quiz`, `components/common`)**
+    -   [ ] `StudentResultsTable.jsx`: Uses a `DataTable` or custom table to show student name, email, score, total marks, submission date.
+-   [ ] **Updates to Existing Components**
+    -   [ ] `QuizCard.jsx` (teacher version): Add "View Results" button.
+-   [ ] **Routing (`routes/index.jsx`)**
+    -   [ ] `/teacher/quiz/:quizId/class/:classId/results` maps to `ViewQuizResultsPage.jsx`.
+-   [ ] **Testing Phase 10**
+    -   [ ] Teacher can select a quiz within a class they own and view submissions/results.
+    -   [ ] A list/table of students with their scores for that quiz is displayed.
+    -   [ ] API call for `getQuizResultsForTeacher` is successful.
+    -   [ ] Data is displayed correctly (student names, scores, etc.).
+    -   [ ] Handles cases where no student has attempted the quiz yet.
+
+## Phase 11: Question Bank & Self-Practice (Teacher & Student)
+
+#### Teacher Side:
+-   [ ] **Services (`questionBankService.js`)**
+    -   [ ] `createQuestionBank(qbData)`: POST `/api/question-banks`.
+        -   `qbData`: `{ title, description, questions: [{ questionText, options: [...], multipleCorrectAnswers, difficultyLevel (1-5) }] }`.
+    -   [ ] `getTeacherQuestionBanks()`: GET `/api/question-banks/teacher`.
+    -   [ ] `getQuestionBankById(qbId)`: GET `/api/question-banks/:questionBankId`.
+    -   [ ] `updateQuestionBank(qbId, qbData)`: PUT `/api/question-banks/:questionBankId`.
+    -   [ ] `deleteQuestionBank(qbId)`: DELETE `/api/question-banks/:questionBankId`.
+    -   [ ] `assignQuestionBankToClass(qbId, classId)`: POST `/api/question-banks/:questionBankId/assign/:classId`.
+-   [ ] **State Management (`teacherStore.js`)**
+    -   [ ] Store: `questionBanks` (array), `currentQuestionBank` (object).
+    -   [ ] Actions: CRUD actions for question banks, `assignQuestionBank(qbId, classId)`.
+-   [ ] **Pages & Components (`pages/teacher`, `components/questionBank`)**
+    -   [ ] `TeacherQuestionBanksPage.jsx`: Lists QBs, link to create.
+    -   [ ] `CreateQuestionBankPage.jsx` (or `EditQuestionBankPage.jsx`): Similar to `CreateQuizPage.jsx` but questions include `difficultyLevel`.
+        -   Uses `QuestionBankForm.jsx`, `QuestionForm.jsx` (adapted for difficulty).
+    -   [ ] `QuestionBankCard.jsx` (teacher): Displays QB title. Options: Edit, Delete, Assign to Class.
+    -   [ ] `AssignQuestionBankModal.jsx`: Similar to `AssignQuizToClassModal.jsx`.
+-   [ ] **Testing (Teacher Side)**
+    -   [ ] Teacher can create, view, update, delete question banks.
+    -   [ ] Questions in QBs have difficulty levels.
+    -   [ ] Teacher can assign a question bank to their classes.
+    -   [ ] API calls are successful and data is handled correctly.
+
+#### Student Side:
+-   [ ] **Services (`selfPracticeService.js`)**
+    -   [ ] `getAvailableQuestionBanks()`: GET `/api/self-practice/banks`.
+    -   [ ] `startOrResumePracticeSession(qbId)`: POST `/api/self-practice/start/:questionBankId`.
+    -   [ ] `submitPracticeBatchAnswers(qbId, sessionId, answers)`: POST `/api/self-practice/submit/:questionBankId`.
+        -   `answers`: `[{ questionId, selectedOptionIds }]`.
+-   [ ] **State Management (`studentStore.js`)**
+    -   [ ] Store: `availableQuestionBanks` (array), `currentPracticeSession` (object: `sessionId`, `currentDifficulty`, `questionsBatch`, student's batch answers).
+    -   [ ] Actions: `fetchAvailableQBs()`, `startPractice(qbId)`, `submitPracticeBatch(answers)`.
+-   [ ] **Pages & Components (`pages/student`, `components/questionBank`)**
+    -   [ ] `StudentSelfPracticePage.jsx`: Lists available question banks for practice.
+    -   [ ] `PracticeSessionPage.jsx`:
+        -   Fetches initial batch of questions via `startPractice`.
+        -   Displays questions (`PracticeQuestionView.jsx`).
+        -   Collects answers for the batch.
+        -   "Submit Batch" button calls `submitPracticeBatch`.
+        -   Displays batch score and fetches next batch based on adaptive difficulty.
+    -   [ ] `QuestionBankCard.jsx` (student): Displays QB title. "Start Practice" button.
+    -   [ ] `PracticeQuestionView.jsx`: Renders questions for practice (no immediate correct/incorrect feedback per question, batch feedback instead).
+-   [ ] **Testing (Student Side)**
+    -   [ ] Student can see question banks assigned to their classes.
+    -   [ ] Student can start a practice session.
+    -   [ ] Receives an initial batch of questions (e.g., 5 questions at difficulty 1).
+    -   [ ] Can submit answers for a batch.
+    -   [ ] Receives score for the batch.
+    -   [ ] Adaptive logic: next batch difficulty adjusts based on performance.
+    -   [ ] API calls are successful.
+
+## Phase 12: Leaderboards & Final Touches
+
+-   [ ] **Services (`leaderboardService.js`)**
+    -   [ ] `getQuizLeaderboardByClass(quizId, classId, page, limit)`: GET `/api/leaderboards/quiz/:quizId/class/:classId`.
+-   [ ] **State Management (Potentially in `teacherStore.js` and `studentStore.js` or a new `leaderboardStore.js`)**
+    -   [ ] Store: `currentLeaderboardData` (array: ranks, student names, scores), `paginationInfo`.
+    -   [ ] Actions: `fetchLeaderboard(quizId, classId, page, limit)`.
+-   [ ] **Pages (`pages/common` or role-specific)**
+    -   [ ] `ViewLeaderboardPage.jsx`:
+        -   Accessible by Teacher (from quiz results or class view) and Student (from class view or quiz card).
+        -   Displays ranked list of students for a specific quiz in a specific class.
+        -   Includes pagination if many attempts.
+-   [ ] **Components (`components/leaderboard`, `components/common`)**
+    -   [ ] `LeaderboardTable.jsx`: Displays the leaderboard data using `DataTable` or custom table.
+    -   [ ] Add links/buttons to access leaderboards from relevant places (e.g., Student's class view next to a quiz, Teacher's quiz results view).
+-   [ ] **Routing (`routes/index.jsx`)**
+    -   [ ] `/leaderboard/quiz/:quizId/class/:classId` maps to `ViewLeaderboardPage.jsx`.
+-   [ ] **Testing (Leaderboards)**
+    -   [ ] Teacher can view leaderboard for a quiz in their class.
+    -   [ ] Student can view leaderboard for a quiz in their enrolled class.
+    -   [ ] Leaderboard is correctly ranked (score descending, submission time ascending for ties).
+    -   [ ] Pagination works correctly.
+    -   [ ] Handles cases with no attempts for the quiz.
+    -   [ ] Access permissions are enforced.
+
+#### Final Touches:
+-   [ ] **UI/UX Refinements**
+    -   [ ] Ensure consistent design, colors, typography across the application.
+    -   [ ] Implement responsive design for common screen sizes (desktop, tablet, mobile).
+    -   [ ] Add appropriate icons and improve visual hierarchy.
+    -   [ ] Enhance forms with better validation feedback.
 -   [ ] **Error Handling & Notifications**
-    -   [ ] Implement user-friendly error messages and success notifications (e.g., using toast notifications).
+    -   [ ] Globally handle API errors (e.g., 401 redirects to login, 403 shows unauthorized page, 500 shows generic error toast).
+    -   [ ] Provide user-friendly error messages and success notifications for all actions.
+    -   [ ] Implement specific `NotFoundPage.jsx` and `UnauthorizedPage.jsx`.
 -   [ ] **Loading States**
-    -   [ ] Add loading indicators for API calls.
--   [ ] **Accessibility (a11y)**
-    -   [ ] Ensure the application is accessible (semantic HTML, ARIA attributes, keyboard navigation).
--   [ ] **Quiz Taking Enhancements**
-    -   [ ] Timer for quizzes.
-    -   [ ] Confirmation before submitting.
--   [ ] **Code Splitting/Lazy Loading**
-    -   [ ] Optimize performance by lazy loading routes/components.
--   [ ] **Form Validation**
-    -   [ ] Implement client-side form validation (e.g., with Formik, React Hook Form, or Yup).
--   [ ] **Testing**
-    -   [ ] Write unit tests (Jest, React Testing Library).
-    -   [ ] Consider end-to-end tests (Cypress, Playwright). 
+    -   [ ] Ensure all data-fetching operations have clear loading indicators (skeletons, spinners).
+    -   [ ] Disable buttons during API calls to prevent multiple submissions.
+-   [ ] **Performance Optimization**
+    -   [ ] Implement code splitting with `React.lazy` and `Suspense` for routes/heavy components.
+    -   [ ] Optimize bundle size using Vite's production build (`npm run build`).
+    -   [ ] Memoize components where necessary (`React.memo`, `useMemo`, `useCallback`).
+    -   [ ] Review for unnecessary re-renders.
+-   [ ] **Accessibility (A11y)**
+    -   [ ] Basic checks: keyboard navigation, sufficient color contrast, ARIA attributes where appropriate.
+-   [ ] **Final Vercel Deployment**
+    -   [ ] Configure custom domain if needed.
+    -   [ ] Set up proper redirects for client-side routing on Vercel (e.g., `vercel.json` rewrite rules for SPA).
+    -   [ ] Ensure all environment variables are correctly configured for production.
+-   [ ] **Thorough Testing (Final Application)**
+    -   [ ] Cross-browser testing (Chrome, Firefox, Safari, Edge).
+    -   [ ] Mobile responsiveness testing on actual devices or emulators.
+    -   [ ] End-to-end testing of all critical user flows for both Teacher and Student roles.
+        -   Registration -> Login -> Class Management -> Quiz Creation/Assignment -> Quiz Attempt -> View Results -> Leaderboard -> Self-Practice.
+    -   [ ] Edge case testing (empty inputs, invalid data, concurrent actions if applicable).
+    -   [ ] Security checks (e.g., ensure no sensitive data is exposed to the wrong roles).
