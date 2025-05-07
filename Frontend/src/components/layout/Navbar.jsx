@@ -1,26 +1,25 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaBars, FaTimes, FaUser, FaSignOutAlt } from 'react-icons/fa';
-import { isAuthenticated, logout, getCurrentUser } from '../../services/authService';
+import useAuthStore from '../../store/authStore';
 import { ROUTES } from '../../config/constants';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const isAuth = isAuthenticated();
-  const user = getCurrentUser();
+  const { user, isAuthenticated, logoutUser } = useAuthStore();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const handleLogout = () => {
-    logout();
+    logoutUser();
     navigate(ROUTES.LOGIN);
   };
 
   const getNavLinks = () => {
-    if (!isAuth) {
+    if (!isAuthenticated) {
       return [
         { name: 'Home', path: ROUTES.HOME },
         { name: 'Login', path: ROUTES.LOGIN },
@@ -28,104 +27,102 @@ const Navbar = () => {
       ];
     }
 
+    const commonLinks = [
+      { name: 'Home', path: ROUTES.HOME },
+      { name: 'Dashboard', path: user?.role === 'teacher' ? ROUTES.TEACHER.DASHBOARD : ROUTES.STUDENT.DASHBOARD },
+    ];
+
     if (user?.role === 'teacher') {
-      return [
-        { name: 'Dashboard', path: ROUTES.TEACHER.DASHBOARD },
+      commonLinks.push(
         { name: 'My Classes', path: ROUTES.TEACHER.CLASSES },
         { name: 'My Quizzes', path: ROUTES.TEACHER.QUIZZES },
         { name: 'Question Banks', path: ROUTES.TEACHER.QUESTION_BANKS },
-      ];
+      );
     }
 
     if (user?.role === 'student') {
-      return [
-        { name: 'Dashboard', path: ROUTES.STUDENT.DASHBOARD },
+      commonLinks.push(
         { name: 'My Classes', path: ROUTES.STUDENT.CLASSES },
         { name: 'My Attempts', path: ROUTES.STUDENT.ATTEMPTS },
         { name: 'Practice', path: ROUTES.STUDENT.PRACTICE },
-      ];
+      );
     }
 
-    return [];
+    return commonLinks;
   };
-
-  const navLinks = getNavLinks();
 
   return (
     <nav className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-xl font-bold text-primary-600">QuizCraze</span>
-            </Link>
-          </div>
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-3">
+            <span className="text-2xl font-bold text-primary-600">QuizCraze</span>
+          </Link>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex md:items-center md:space-x-4">
-            {navLinks.map((link) => (
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex md:items-center md:space-x-8">
+            {getNavLinks().map((link) => (
               <Link
-                key={link.name}
+                key={link.path}
                 to={link.path}
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
+                className="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
               >
                 {link.name}
               </Link>
             ))}
-
-            {isAuth && (
+            {isAuthenticated && (
               <button
                 onClick={handleLogout}
-                className="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50 flex items-center"
+                className="flex items-center space-x-2 text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
               >
-                <FaSignOutAlt className="mr-1" />
-                Logout
+                <FaSignOutAlt />
+                <span>Logout</span>
               </button>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex items-center md:hidden">
+          {/* Mobile menu button */}
+          <div className="md:hidden">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-50 focus:outline-none"
+              className="text-gray-600 hover:text-primary-600 p-2"
             >
               {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-
-            {isAuth && (
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setIsMenuOpen(false);
-                }}
-                className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-red-600 hover:bg-gray-50 flex items-center"
-              >
-                <FaSignOutAlt className="mr-2" />
-                Logout
-              </button>
-            )}
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4">
+            <div className="flex flex-col space-y-2">
+              {getNavLinks().map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ))}
+              {isAuthenticated && (
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center space-x-2 text-gray-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  <FaSignOutAlt />
+                  <span>Logout</span>
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </nav>
   );
 };

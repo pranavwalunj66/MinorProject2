@@ -1,108 +1,109 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import {
-  loginTeacher,
-  loginStudent,
-  registerTeacher,
-  registerStudent,
-  storeAuthData,
-  logout as logoutService,
-} from '../services/authService';
+import * as authService from '../services/authService';
 
 const useAuthStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       token: null,
       isAuthenticated: false,
-      isLoading: false,
+      role: null,
       error: null,
 
-      // Register a user (teacher or student)
-      registerUser: async (userData, role) => {
-        set({ isLoading: true, error: null });
+      // Login actions
+      loginTeacher: async (email, password) => {
         try {
-          const registerFn = role === 'teacher' ? registerTeacher : registerStudent;
-          const response = await registerFn(userData);
-
-          storeAuthData(response);
-
+          const data = await authService.loginTeacher(email, password);
           set({
-            user: {
-              id: response._id,
-              name: response.name,
-              email: response.email,
-              role: response.role,
-            },
-            token: response.token,
+            user: data.user,
+            token: data.token,
             isAuthenticated: true,
-            isLoading: false,
+            role: 'teacher',
             error: null,
           });
-
-          return response;
-        } catch (err) {
-          set({
-            isLoading: false,
-            error: err.response?.data?.message || 'Registration failed',
-          });
-          throw err;
+          return data;
+        } catch (error) {
+          set({ error: error.response?.data?.message || 'Login failed' });
+          throw error;
         }
       },
 
-      // Login a user (teacher or student)
-      loginUser: async (credentials, role) => {
-        set({ isLoading: true, error: null });
+      loginStudent: async (email, password) => {
         try {
-          const loginFn = role === 'teacher' ? loginTeacher : loginStudent;
-          const response = await loginFn(credentials);
-
-          storeAuthData(response);
-
+          const data = await authService.loginStudent(email, password);
           set({
-            user: {
-              id: response._id,
-              name: response.name,
-              email: response.email,
-              role: response.role,
-            },
-            token: response.token,
+            user: data.user,
+            token: data.token,
             isAuthenticated: true,
-            isLoading: false,
+            role: 'student',
             error: null,
           });
-
-          return response;
-        } catch (err) {
-          set({
-            isLoading: false,
-            error: err.response?.data?.message || 'Login failed',
-          });
-          throw err;
+          return data;
+        } catch (error) {
+          set({ error: error.response?.data?.message || 'Login failed' });
+          throw error;
         }
       },
 
-      // Logout user
+      // Register actions
+      registerTeacher: async (name, email, password) => {
+        try {
+          const data = await authService.registerTeacher(name, email, password);
+          set({
+            user: data.user,
+            token: data.token,
+            isAuthenticated: true,
+            role: 'teacher',
+            error: null,
+          });
+          return data;
+        } catch (error) {
+          set({ error: error.response?.data?.message || 'Registration failed' });
+          throw error;
+        }
+      },
+
+      registerStudent: async (name, email, password) => {
+        try {
+          const data = await authService.registerStudent(name, email, password);
+          set({
+            user: data.user,
+            token: data.token,
+            isAuthenticated: true,
+            role: 'student',
+            error: null,
+          });
+          return data;
+        } catch (error) {
+          set({ error: error.response?.data?.message || 'Registration failed' });
+          throw error;
+        }
+      },
+
+      // Logout action
       logoutUser: () => {
-        logoutService();
+        authService.logout(); // Clear localStorage
         set({
           user: null,
           token: null,
           isAuthenticated: false,
+          role: null,
           error: null,
         });
       },
 
-      // Clear any errors
+      // Clear error
       clearError: () => set({ error: null }),
     }),
     {
-      name: 'auth-storage', // name of the item in localStorage
+      name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
-      }), // only persist these fields
+        role: state.role,
+      }),
     }
   )
 );

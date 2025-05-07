@@ -1,27 +1,73 @@
 import api from './api';
+import { AUTH_ENDPOINTS } from '../config/endpoints';
+import { STORAGE_KEYS } from '../config/constants';
 
-// Teacher registration
-export const registerTeacher = async (userData) => {
-  const response = await api.post('/auth/teacher/register', userData);
-  return response.data;
+// Teacher Authentication
+export const registerTeacher = async (name, email, password) => {
+  try {
+    const response = await api.post(AUTH_ENDPOINTS.TEACHER_REGISTER, {
+      name,
+      email,
+      password,
+    });
+    // Store token and user data
+    localStorage.setItem(STORAGE_KEYS.TOKEN, response.data.token);
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.data.user));
+    return response.data;
+  } catch (error) {
+    console.error('Register Teacher Error:', error);
+    throw error;
+  }
 };
 
-// Teacher login
-export const loginTeacher = async (credentials) => {
-  const response = await api.post('/auth/teacher/login', credentials);
-  return response.data;
+export const loginTeacher = async (email, password) => {
+  try {
+    const response = await api.post(AUTH_ENDPOINTS.TEACHER_LOGIN, {
+      email,
+      password,
+    });
+    // Store token and user data
+    localStorage.setItem(STORAGE_KEYS.TOKEN, response.data.token);
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.data.user));
+    return response.data;
+  } catch (error) {
+    console.error('Login Teacher Error:', error);
+    throw error;
+  }
 };
 
-// Student registration
-export const registerStudent = async (userData) => {
-  const response = await api.post('/auth/student/register', userData);
-  return response.data;
+// Student Authentication
+export const registerStudent = async (name, email, password) => {
+  try {
+    const response = await api.post(AUTH_ENDPOINTS.STUDENT_REGISTER, {
+      name,
+      email,
+      password,
+    });
+    // Store token and user data
+    localStorage.setItem(STORAGE_KEYS.TOKEN, response.data.token);
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.data.user));
+    return response.data;
+  } catch (error) {
+    console.error('Register Student Error:', error);
+    throw error;
+  }
 };
 
-// Student login
-export const loginStudent = async (credentials) => {
-  const response = await api.post('/auth/student/login', credentials);
-  return response.data;
+export const loginStudent = async (email, password) => {
+  try {
+    const response = await api.post(AUTH_ENDPOINTS.STUDENT_LOGIN, {
+      email,
+      password,
+    });
+    // Store token and user data
+    localStorage.setItem(STORAGE_KEYS.TOKEN, response.data.token);
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(response.data.user));
+    return response.data;
+  } catch (error) {
+    console.error('Login Student Error:', error);
+    throw error;
+  }
 };
 
 // Common function to store auth data
@@ -40,8 +86,8 @@ export const storeAuthData = (userData) => {
 
 // Logout - clear localStorage
 export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
+  localStorage.removeItem(STORAGE_KEYS.TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.USER);
 };
 
 // Check if user is logged in

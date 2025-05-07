@@ -1,28 +1,12 @@
+import { Outlet } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import PageLayout from './components/layout/PageLayout';
-import AppRoutes from './routes';
-import './App.css';
 
 function App() {
   return (
     <>
-      {/* Global Toast Container for notifications */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-
-      <PageLayout>
-        <AppRoutes />
-      </PageLayout>
+      <ToastContainer />
+      <Outlet />
     </>
   );
 }

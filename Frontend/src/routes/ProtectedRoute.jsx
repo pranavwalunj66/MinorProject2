@@ -1,23 +1,22 @@
-import { Navigate, Outlet } from 'react-router-dom';
-import { isAuthenticated, getCurrentUser } from '../services/authService';
+import { Navigate, useLocation } from 'react-router-dom';
+import useAuthStore from '../store/authStore';
 
 // ProtectedRoute component that checks authentication and optional role
-const ProtectedRoute = ({ allowedRoles }) => {
-  const isAuth = isAuthenticated();
-  const user = getCurrentUser();
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+  const { isAuthenticated, role } = useAuthStore();
+  const location = useLocation();
 
-  // If not authenticated, redirect to login
-  if (!isAuth) {
-    return <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If roles are specified and user's role is not in the allowed roles, redirect to unauthorized
-  if (allowedRoles && (!user || !allowedRoles.includes(user.role))) {
+  if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
+    // Redirect to unauthorized page if role is not allowed
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // If authenticated and authorized, render the child routes
-  return <Outlet />;
+  return children;
 };
 
 export default ProtectedRoute;

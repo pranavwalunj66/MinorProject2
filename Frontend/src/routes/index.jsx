@@ -1,56 +1,78 @@
-import { Routes, Route } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
+import App from '../App';
 import ProtectedRoute from './ProtectedRoute';
+import PageLayout from '../components/layout/PageLayout';
+import DashboardLayout from '../components/layout/DashboardLayout';
 import HomePage from '../pages/HomePage';
-import NotFound from '../pages/NotFound';
+import LoginPage from '../pages/auth/LoginPage';
+import RegisterPage from '../pages/auth/RegisterPage';
+import TeacherDashboard from '../pages/teacher/TeacherDashboard';
+import StudentDashboard from '../pages/student/StudentDashboard';
 import Unauthorized from '../pages/Unauthorized';
+import NotFoundPage from '../pages/NotFoundPage';
 
-// Placeholder Pages
-const LoginPage = () => (
-  <div className="container mx-auto p-6">
-    <h1 className="text-3xl font-bold">Login Page</h1>
-  </div>
-);
-const RegisterPage = () => (
-  <div className="container mx-auto p-6">
-    <h1 className="text-3xl font-bold">Register Page</h1>
-  </div>
-);
-const TeacherDashboardPage = () => (
-  <div className="container mx-auto p-6">
-    <h1 className="text-3xl font-bold">Teacher Dashboard</h1>
-  </div>
-);
-const StudentDashboardPage = () => (
-  <div className="container mx-auto p-6">
-    <h1 className="text-3xl font-bold">Student Dashboard</h1>
-  </div>
-);
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+    children: [
+      {
+        element: <PageLayout />,
+        children: [
+          {
+            index: true,
+            element: <HomePage />,
+          },
+          {
+            path: 'login',
+            element: <LoginPage />,
+          },
+          {
+            path: 'register',
+            element: <RegisterPage />,
+          },
+          {
+            path: 'unauthorized',
+            element: <Unauthorized />,
+          },
+        ],
+      },
+      {
+        path: 'teacher',
+        element: (
+          <ProtectedRoute allowedRoles={['teacher']}>
+            <DashboardLayout />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            path: 'dashboard',
+            element: <TeacherDashboard />,
+          },
+          // More teacher routes will be added here
+        ],
+      },
+      {
+        path: 'student',
+        element: (
+          <ProtectedRoute allowedRoles={['student']}>
+            <DashboardLayout />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            path: 'dashboard',
+            element: <StudentDashboard />,
+          },
+          // More student routes will be added here
+        ],
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
+      },
+    ],
+  },
+]);
 
-const AppRoutes = () => {
-  return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/unauthorized" element={<Unauthorized />} />
-
-      {/* Protected Teacher Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
-        <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
-        {/* Additional teacher routes will go here */}
-      </Route>
-
-      {/* Protected Student Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['student']} />}>
-        <Route path="/student/dashboard" element={<StudentDashboardPage />} />
-        {/* Additional student routes will go here */}
-      </Route>
-
-      {/* Catch-all route for 404 */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
-};
-
-export default AppRoutes;
+export default router;
