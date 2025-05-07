@@ -2,18 +2,18 @@
 
 ## Phase 1: Project Setup & Basic Structure (Revised)
 
--   [x] **Initialize React Project**
-    -   [x] Project initialized with Vite: `npm create vite@latest frontend -- --template react`
-    -   [x] Using React (ensure latest stable version) and Vite (ensure latest stable version)
+-   [ ] **Initialize React Project**
+    -   [ ] Project initialized with Vite: `pnpm create vite@latest frontend -- --template react`
+    -   [ ] Using React (ensure latest stable version) and Vite (ensure latest stable version)
 -   [ ] **Complete Core Dependencies Setup**
-    -   [ ] Install `react-router-dom` (for routing): `npm install react-router-dom`
-    -   [ ] Install `axios` (for API calls): `npm install axios`
-    -   [ ] Install state management library: `npm install zustand`
-    -   [ ] Install styling library: `npm install tailwindcss postcss autoprefixer`
+    -   [ ] Install `react-router-dom` (for routing): `pnpm install react-router-dom`
+    -   [ ] Install `axios` (for API calls): `pnpm install axios`
+    -   [ ] Install state management library: `pnpm install zustand`
+    -   [ ] Install styling library: `pnpm install tailwindcss postcss autoprefixer`
     -   [ ] Initialize Tailwind CSS: `npx tailwindcss init -p`
     -   [ ] Configure Tailwind CSS by updating `tailwind.config.js` (content paths, theme).
-    -   [ ] Install an icon library (e.g., `react-icons`): `npm install react-icons`
-    -   [ ] Install a notification/toast library (e.g., `react-toastify`): `npm install react-toastify`
+    -   [ ] Install an icon library (e.g., `react-icons`): `pnpm install react-icons`
+    -   [ ] Install a notification/toast library (e.g., `react-toastify`): `pnpm install react-toastify`
 -   [ ] **Setup Project Structure**
     -   [ ] `/src/components` (Reusable UI components)
         -   [ ] `/src/components/ui` (Generic UI elements: Button, Input, Modal, Card, Spinner, Tooltip, etc. - styled with Tailwind)
@@ -41,7 +41,7 @@
         -   [ ] `studentStore.js` (student's enrolled classes, quiz attempts, practice sessions)
     -   [ ] `/src/hooks` (Custom React hooks: `useAuth.js`, `useApi.js` (generic API call hook), `useForm.js`, etc.)
     -   [ ] `/src/utils` (Helper functions, constants, validators, formatters, enums)
-    -   [x] `/src/assets` (Images, global styles - `main.css` for Tailwind base styles and custom global styles)
+    -   [ ] `/src/assets` (Images, global styles - `main.css` for Tailwind base styles and custom global styles)
     -   [ ] `/src/routes` (Route configuration, protected routes logic: `ProtectedRoute.jsx`)
     -   [ ] `/src/config` (Application-level configurations, e.g., API endpoint paths, role names)
 -   [ ] **Basic Routing Setup (`App.jsx` and `routes/index.jsx`)**
@@ -60,14 +60,14 @@
     -   [ ] Create `.env` and `.env.example` files.
     -   [ ] Add `VITE_API_BASE_URL=http://localhost:5000/api` to `.env`.
 -   [ ] **Vercel Deployment Setup**
-    -   [x] Frontend already deployed on Vercel.
-    -   [ ] Configure Vercel project settings: build command (`npm run build`), output directory (`dist`), environment variables (`VITE_API_BASE_URL` for production).
+    -   [ ] Frontend already deployed on Vercel.
+    -   [ ] Configure Vercel project settings: build command (`pnpm run build`), output directory (`dist`), environment variables (`VITE_API_BASE_URL` for production).
     -   [ ] Ensure automatic deployment from Git repository.
 -   [ ] **Linting and Formatting**
     -   [ ] Setup ESLint and Prettier with recommended configurations for React/Vite.
-    -   [ ] Add npm scripts: `lint`, `format`.
+    -   [ ] Add pnpm scripts: `lint`, `format`.
 -   [ ] **Testing Phase 1**
-    -   [x] App runs locally (`npm run dev`).
+    -   [ ] App runs locally (`pnpm run dev`).
     -   [ ] Basic navigation between placeholder pages works.
     -   [ ] Simple change deploys to Vercel.
     -   [ ] Environment variables are accessible.
@@ -457,7 +457,7 @@
     -   [ ] Disable buttons during API calls to prevent multiple submissions.
 -   [ ] **Performance Optimization**
     -   [ ] Implement code splitting with `React.lazy` and `Suspense` for routes/heavy components.
-    -   [ ] Optimize bundle size using Vite's production build (`npm run build`).
+    -   [ ] Optimize bundle size using Vite's production build (`pnpm run build`).
     -   [ ] Memoize components where necessary (`React.memo`, `useMemo`, `useCallback`).
     -   [ ] Review for unnecessary re-renders.
 -   [ ] **Accessibility (A11y)**
