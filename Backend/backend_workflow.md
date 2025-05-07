@@ -2,22 +2,22 @@
 
 ## Phase 1: Project Setup & User Authentication
 
--   [ ] **Initialize Node.js Project**
-    -   [ ] Create `package.json` (`npm init -y`)
-    -   [ ] Install core dependencies (Express.js, Mongoose/Sequelize, bcryptjs, jsonwebtoken, dotenv, cors)
--   [ ] **Setup Folder Structure**
-    -   [ ] `/config` (for database connection, environment variables)
-    -   [ ] `/models` (for Mongoose/Sequelize schemas/models)
-    -   [ ] `/controllers` (for request handling logic)
-    -   [ ] `/routes` (for API endpoint definitions)
-    -   [ ] `/middleware` (for authentication, error handling, etc.)
-    -   [ ] `/utils` (for helper functions)
--   [ ] **Environment Configuration**
-    -   [ ] Create `.env` file (for database URI, JWT secret, port, etc.)
-    -   [ ] Create `config.js` to load environment variables.
--   [ ] **Database Setup**
-    -   [ ] Choose a database (MongoDB with Mongoose or PostgreSQL/MySQL with Sequelize)
-    -   [ ] Implement database connection logic in `config/db.js`.
+-   [x] **Initialize Node.js Project**
+    -   [x] Create `package.json` (`npm init -y`)
+    -   [x] Install core dependencies (Express.js, Mongoose/Sequelize, bcryptjs, jsonwebtoken, dotenv, cors)
+-   [x] **Setup Folder Structure**
+    -   [x] `/config` (for database connection, environment variables)
+    -   [x] `/models` (for Mongoose/Sequelize schemas/models)
+    -   [x] `/controllers` (for request handling logic)
+    -   [x] `/routes` (for API endpoint definitions)
+    -   [x] `/middleware` (for authentication, error handling, etc.)
+    -   [x] `/utils` (for helper functions)
+-   [x] **Environment Configuration**
+    -   [x] Create environment example in README.md (instead of .env)
+    -   [x] Create `config.js` to load environment variables.
+-   [x] **Database Setup**
+    -   [x] Choose a database (MongoDB with Mongoose)
+    -   [x] Implement database connection logic in `config/db.js`.
 -   [ ] **User Models (Teacher & Student)**
     -   [ ] Define `Teacher` schema/model (`name`, `email`, `password`, `createdClasses`) in `models/Teacher.js`.
     -   [ ] Define `Student` schema/model (`name`, `email`, `password`, `enrolledClasses`, `quizAttempts`) in `models/Student.js`.
