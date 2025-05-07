@@ -921,4 +921,507 @@ Get all quiz attempts for a specific quiz within a specific class.
   - **Content**: `{ "success": false, "message": "Quiz not found or you are not authorized to access this quiz" }`
   - **Content**: `{ "success": false, "message": "Class not found or you are not authorized to access this class" }`
 - **Code**: 500 Internal Server Error
-  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }` 
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }`
+
+## Question Bank Management APIs
+
+### Create Question Bank (Teacher Only)
+
+Create a new question bank with difficulty-leveled questions.
+
+- **URL**: `/api/question-banks`
+- **Method**: `POST`
+- **Authentication**: Required (Teacher only)
+
+**Request Body**:
+```json
+{
+  "title": "Mathematics Question Bank",
+  "description": "Questions for practice in mathematics",
+  "questions": [
+    {
+      "questionText": "What is 2+2?",
+      "options": [
+        { "optionText": "3", "isCorrect": false },
+        { "optionText": "4", "isCorrect": true },
+        { "optionText": "5", "isCorrect": false },
+        { "optionText": "22", "isCorrect": false }
+      ],
+      "multipleCorrectAnswers": false,
+      "difficultyLevel": 1
+    },
+    {
+      "questionText": "Solve for x: 2x + 5 = 15",
+      "options": [
+        { "optionText": "4", "isCorrect": false },
+        { "optionText": "5", "isCorrect": true },
+        { "optionText": "6", "isCorrect": false },
+        { "optionText": "7", "isCorrect": false }
+      ],
+      "multipleCorrectAnswers": false,
+      "difficultyLevel": 2
+    }
+  ]
+}
+```
+
+**Success Response**:
+- **Code**: 201 Created
+- **Content**:
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "question_bank_id",
+    "title": "Mathematics Question Bank",
+    "description": "Questions for practice in mathematics",
+    "questions": [
+      {
+        "_id": "question_id_1",
+        "questionText": "What is 2+2?",
+        "options": [
+          { "_id": "option_id_1", "optionText": "3", "isCorrect": false },
+          { "_id": "option_id_2", "optionText": "4", "isCorrect": true },
+          { "_id": "option_id_3", "optionText": "5", "isCorrect": false },
+          { "_id": "option_id_4", "optionText": "22", "isCorrect": false }
+        ],
+        "multipleCorrectAnswers": false,
+        "difficultyLevel": 1
+      },
+      {
+        "_id": "question_id_2",
+        "questionText": "Solve for x: 2x + 5 = 15",
+        "options": [
+          { "_id": "option_id_5", "optionText": "4", "isCorrect": false },
+          { "_id": "option_id_6", "optionText": "5", "isCorrect": true },
+          { "_id": "option_id_7", "optionText": "6", "isCorrect": false },
+          { "_id": "option_id_8", "optionText": "7", "isCorrect": false }
+        ],
+        "multipleCorrectAnswers": false,
+        "difficultyLevel": 2
+      }
+    ],
+    "createdBy": "teacher_id",
+    "assignedClasses": [],
+    "createdAt": "2023-07-28T14:25:30.789Z",
+    "updatedAt": "2023-07-28T14:25:30.789Z"
+  }
+}
+```
+
+**Error Responses**:
+- **Code**: 400 Bad Request
+  - **Content**: `{ "success": false, "message": "Title and at least one question are required" }`
+  - **Content**: `{ "success": false, "message": "Difficulty level must be between 1 and 5" }`
+- **Code**: 403 Forbidden
+  - **Content**: `{ "success": false, "message": "Access denied: Teachers only" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }`
+
+### Get Teacher's Question Banks
+
+Get all question banks created by the logged-in teacher.
+
+- **URL**: `/api/question-banks/teacher`
+- **Method**: `GET`
+- **Authentication**: Required (Teacher only)
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "_id": "question_bank_id_1",
+      "title": "Mathematics Question Bank",
+      "description": "Questions for practice in mathematics",
+      "assignedClasses": ["class_id_1", "class_id_2"],
+      "createdAt": "2023-07-28T14:25:30.789Z"
+    },
+    {
+      "_id": "question_bank_id_2",
+      "title": "Science Question Bank",
+      "description": "Questions for practice in science",
+      "assignedClasses": ["class_id_1"],
+      "createdAt": "2023-07-29T10:15:22.456Z"
+    }
+  ]
+}
+```
+
+**Error Responses**:
+- **Code**: 403 Forbidden
+  - **Content**: `{ "success": false, "message": "Access denied: Teachers only" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }`
+
+### Get Question Bank Details
+
+Get detailed information about a specific question bank.
+
+- **URL**: `/api/question-banks/:questionBankId`
+- **Method**: `GET`
+- **Authentication**: Required (Teacher only)
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "question_bank_id",
+    "title": "Mathematics Question Bank",
+    "description": "Questions for practice in mathematics",
+    "questions": [
+      {
+        "_id": "question_id_1",
+        "questionText": "What is 2+2?",
+        "options": [
+          { "_id": "option_id_1", "optionText": "3", "isCorrect": false },
+          { "_id": "option_id_2", "optionText": "4", "isCorrect": true },
+          { "_id": "option_id_3", "optionText": "5", "isCorrect": false },
+          { "_id": "option_id_4", "optionText": "22", "isCorrect": false }
+        ],
+        "multipleCorrectAnswers": false,
+        "difficultyLevel": 1
+      },
+      {
+        "_id": "question_id_2",
+        "questionText": "Solve for x: 2x + 5 = 15",
+        "options": [
+          { "_id": "option_id_5", "optionText": "4", "isCorrect": false },
+          { "_id": "option_id_6", "optionText": "5", "isCorrect": true },
+          { "_id": "option_id_7", "optionText": "6", "isCorrect": false },
+          { "_id": "option_id_8", "optionText": "7", "isCorrect": false }
+        ],
+        "multipleCorrectAnswers": false,
+        "difficultyLevel": 2
+      }
+    ],
+    "createdBy": "teacher_id",
+    "assignedClasses": ["class_id_1", "class_id_2"],
+    "createdAt": "2023-07-28T14:25:30.789Z",
+    "updatedAt": "2023-07-28T14:25:30.789Z"
+  }
+}
+```
+
+**Error Responses**:
+- **Code**: 403 Forbidden
+  - **Content**: `{ "success": false, "message": "Access denied: Teachers only" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "success": false, "message": "Question bank not found" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }`
+
+### Update Question Bank
+
+Update an existing question bank.
+
+- **URL**: `/api/question-banks/:questionBankId`
+- **Method**: `PUT`
+- **Authentication**: Required (Teacher only)
+
+**Request Body**:
+```json
+{
+  "title": "Updated Mathematics Question Bank",
+  "description": "Updated description for mathematics practice",
+  "questions": [
+    {
+      "questionText": "What is 3+3?",
+      "options": [
+        { "optionText": "5", "isCorrect": false },
+        { "optionText": "6", "isCorrect": true },
+        { "optionText": "7", "isCorrect": false }
+      ],
+      "multipleCorrectAnswers": false,
+      "difficultyLevel": 1
+    }
+  ]
+}
+```
+Note: You can update any combination of these fields (title, description, questions).
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "question_bank_id",
+    "title": "Updated Mathematics Question Bank",
+    "description": "Updated description for mathematics practice",
+    "questions": [
+      {
+        "_id": "question_id_3",
+        "questionText": "What is 3+3?",
+        "options": [
+          { "_id": "option_id_9", "optionText": "5", "isCorrect": false },
+          { "_id": "option_id_10", "optionText": "6", "isCorrect": true },
+          { "_id": "option_id_11", "optionText": "7", "isCorrect": false }
+        ],
+        "multipleCorrectAnswers": false,
+        "difficultyLevel": 1
+      }
+    ],
+    "createdBy": "teacher_id",
+    "assignedClasses": ["class_id_1", "class_id_2"],
+    "createdAt": "2023-07-28T14:25:30.789Z",
+    "updatedAt": "2023-07-30T09:18:45.123Z"
+  }
+}
+```
+
+**Error Responses**:
+- **Code**: 400 Bad Request
+  - **Content**: `{ "success": false, "message": "At least one question is required if updating questions" }`
+  - **Content**: `{ "success": false, "message": "Difficulty level must be between 1 and 5" }`
+- **Code**: 403 Forbidden
+  - **Content**: `{ "success": false, "message": "Not authorized to update this question bank" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "success": false, "message": "Question bank not found" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }`
+
+### Delete Question Bank
+
+Delete a question bank.
+
+- **URL**: `/api/question-banks/:questionBankId`
+- **Method**: `DELETE`
+- **Authentication**: Required (Teacher only)
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "success": true,
+  "message": "Question bank deleted successfully"
+}
+```
+
+**Error Responses**:
+- **Code**: 403 Forbidden
+  - **Content**: `{ "success": false, "message": "Not authorized to delete this question bank" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "success": false, "message": "Question bank not found" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }`
+
+### Assign Question Bank to Class
+
+Assign a question bank to a specific class, making it available for self-practice to students in that class.
+
+- **URL**: `/api/question-banks/:questionBankId/assign/:classId`
+- **Method**: `POST`
+- **Authentication**: Required (Teacher only)
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "success": true,
+  "message": "Question bank assigned to class successfully",
+  "data": {
+    "_id": "question_bank_id",
+    "title": "Mathematics Question Bank",
+    "assignedClasses": ["class_id_1", "class_id_2", "class_id_3"]
+  }
+}
+```
+
+**Error Responses**:
+- **Code**: 400 Bad Request
+  - **Content**: `{ "success": false, "message": "Question bank already assigned to this class" }`
+- **Code**: 403 Forbidden
+  - **Content**: `{ "success": false, "message": "Not authorized to assign this question bank" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "success": false, "message": "Question bank not found" }` or
+  - **Content**: `{ "success": false, "message": "Class not found" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "success": false, "message": "Server error", "error": "Error message here" }`
+
+## Self-Practice APIs
+
+### Get Available Question Banks (Student Only)
+
+Get all question banks assigned to classes the student is enrolled in.
+
+- **URL**: `/api/self-practice/banks`
+- **Method**: `GET`
+- **Authentication**: Required (Student only)
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "_id": "question_bank_id_1",
+      "title": "Mathematics Question Bank",
+      "description": "Questions for practice in mathematics",
+      "assignedClasses": [
+        {
+          "_id": "class_id_1",
+          "className": "Mathematics 101"
+        }
+      ]
+    },
+    {
+      "_id": "question_bank_id_2",
+      "title": "Science Question Bank",
+      "description": "Questions for practice in science",
+      "assignedClasses": [
+        {
+          "_id": "class_id_1",
+          "className": "Mathematics 101"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Error Responses**:
+- **Code**: 403 Forbidden
+  - **Content**: `{ "message": "Access denied: Student only" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "message": "Student not found" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "message": "Server error", "error": "Error message here" }`
+
+### Start or Resume Practice Session
+
+Start a new practice session or resume an existing one for a specific question bank.
+
+- **URL**: `/api/self-practice/start/:questionBankId`
+- **Method**: `POST`
+- **Authentication**: Required (Student only)
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "success": true,
+  "data": {
+    "sessionId": "session_id",
+    "currentDifficulty": 1,
+    "questions": [
+      {
+        "_id": "question_id_1",
+        "questionText": "What is 2+2?",
+        "options": [
+          { "_id": "option_id_1", "optionText": "3" },
+          { "_id": "option_id_2", "optionText": "4" },
+          { "_id": "option_id_3", "optionText": "5" },
+          { "_id": "option_id_4", "optionText": "22" }
+        ],
+        "multipleCorrectAnswers": false,
+        "difficultyLevel": 1
+      },
+      {
+        "_id": "question_id_2",
+        "questionText": "What is 3+3?",
+        "options": [
+          { "_id": "option_id_5", "optionText": "5" },
+          { "_id": "option_id_6", "optionText": "6" },
+          { "_id": "option_id_7", "optionText": "7" }
+        ],
+        "multipleCorrectAnswers": false,
+        "difficultyLevel": 1
+      }
+    ]
+  }
+}
+```
+Note: The `isCorrect` flag is not included in the options to prevent students from seeing the correct answers.
+
+**Error Responses**:
+- **Code**: 403 Forbidden
+  - **Content**: `{ "message": "Access denied: Student only" }` or
+  - **Content**: `{ "message": "You do not have access to this question bank" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "message": "Question bank not found" }` or
+  - **Content**: `{ "message": "Student not found" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "message": "Server error", "error": "Error message here" }`
+
+### Submit Practice Batch Answers
+
+Submit answers for a batch of practice questions and get the next batch.
+
+- **URL**: `/api/self-practice/submit/:questionBankId`
+- **Method**: `POST`
+- **Authentication**: Required (Student only)
+
+**Request Body**:
+```json
+{
+  "sessionId": "session_id",
+  "answers": [
+    {
+      "questionId": "question_id_1",
+      "selectedOptionIds": ["option_id_2"]
+    },
+    {
+      "questionId": "question_id_2",
+      "selectedOptionIds": ["option_id_6"]
+    }
+  ]
+}
+```
+
+**Success Response**:
+- **Code**: 200 OK
+- **Content**:
+```json
+{
+  "success": true,
+  "data": {
+    "score": {
+      "correct": 2,
+      "total": 2,
+      "percentage": 100
+    },
+    "newDifficulty": 2,
+    "nextBatch": [
+      {
+        "_id": "question_id_3",
+        "questionText": "Solve for x: 2x + 5 = 15",
+        "options": [
+          { "_id": "option_id_8", "optionText": "4" },
+          { "_id": "option_id_9", "optionText": "5" },
+          { "_id": "option_id_10", "optionText": "6" },
+          { "_id": "option_id_11", "optionText": "7" }
+        ],
+        "multipleCorrectAnswers": false,
+        "difficultyLevel": 2
+      }
+    ]
+  }
+}
+```
+Note: The difficulty level increases because the student performed well (scored 100%).
+
+**Error Responses**:
+- **Code**: 400 Bad Request
+  - **Content**: `{ "message": "Please provide answers array" }`
+- **Code**: 403 Forbidden
+  - **Content**: `{ "message": "Access denied: Student only" }`
+- **Code**: 404 Not Found
+  - **Content**: `{ "message": "Practice session not found" }` or
+  - **Content**: `{ "message": "Question bank not found" }`
+- **Code**: 500 Internal Server Error
+  - **Content**: `{ "message": "Server error", "error": "Error message here" }` 

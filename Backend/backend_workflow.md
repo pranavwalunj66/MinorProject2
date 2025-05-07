@@ -264,16 +264,16 @@
 
 ## Phase 6: Student Self-Practice Adaptive Quiz Logic
 
--   [ ] **Student-Side Self-Practice Controllers (`controllers/selfPracticeController.js`)**
-    -   [ ] `getAvailableQuestionBanks` (Student only):
+-   [x] **Student-Side Self-Practice Controllers (`controllers/selfPracticeController.js`)**
+    -   [x] `getAvailableQuestionBanks` (Student only):
         -   Fetch all `QuestionBank`s assigned to classes the student is enrolled in.
         -   Populate basic `QuestionBank` info (title, description).
-    -   [ ] `startOrResumePracticeSession` (Student only):
+    -   [x] `startOrResumePracticeSession` (Student only):
         -   Input: `questionBankId`.
         -   Find or create `SelfPracticeProgress` for the student and question bank.
         -   If resuming, potentially clear `questionsAttemptedInSession` if `lastAttemptedAt` is too old (e.g., >24 hours) to reset session repetition tracking.
         -   Call a helper function/service to get the first batch of 5 questions.
-    -   [ ] `getPracticeQuizBatch` (Helper function or part of `startOrResumePracticeSession` logic):
+    -   [x] `getPracticeQuizBatch` (Helper function or part of `startOrResumePracticeSession` logic):
         -   Input: `studentId`, `questionBankId`, `currentAdaptiveDifficulty`, `questionsAttemptedInSession` (from `SelfPracticeProgress`).
         -   Logic:
             -   Fetch up to 5 questions from `QuestionBank` matching `currentAdaptiveDifficulty`.
@@ -283,7 +283,7 @@
                 -   If still fewer than 5, serve a smaller batch.
             -   If `QuestionBank` has very few questions overall (e.g., < 5 total), return an appropriate message/status.
             -   Return the batch of questions (without correct answers exposed to student yet).
-    -   [ ] `submitPracticeBatchAnswers` (Student only):
+    -   [x] `submitPracticeBatchAnswers` (Student only):
         -   Input: `questionBankId`, `practiceSessionId` (or use student+QB to identify progress), `answers` (array of selected options for the batch).
         -   Fetch the `QuestionBank` questions (with correct answers) corresponding to the batch.
         -   Calculate score for the batch (e.g., number of correct answers out of 5).
@@ -295,23 +295,23 @@
                 -   Else: difficulty same.
             -   Update `lastAttemptedAt`.
         -   Return score, total marks for the batch, and potentially the next batch of questions (by calling `getPracticeQuizBatch` again).
--   [ ] **Student-Side Self-Practice Routes (`routes/selfPracticeRoutes.js`)**
-    -   [ ] `GET /api/self-practice/banks` (Student, `authMiddleware`, `getAvailableQuestionBanks`)
-    -   [ ] `POST /api/self-practice/start/:questionBankId` (Student, `authMiddleware`, `startOrResumePracticeSession`) // Could also be a GET if it just returns the first batch
-    -   [ ] `POST /api/self-practice/submit/:questionBankId` (Student, `authMiddleware`, `submitPracticeBatchAnswers`)
--   [ ] **Update Main App File (`server.js`)**
-    -   [ ] Mount `selfPracticeRoutes`.
--   [ ] **Error Handling & Edge Cases for Adaptive Logic**
-    -   [ ] Handle `QuestionBank` with < 5 questions overall.
-    -   [ ] Handle scenarios where a difficulty level has no questions or all have been recently attempted.
-    -   [ ] Ensure `currentAdaptiveDifficulty` stays within 1-5 bounds.
--   [ ] **Testing Phase 6**
-    -   [ ] Test student fetching available question banks.
-    -   [ ] Test student starting a practice session and receiving the first batch (difficulty 1).
-    -   [ ] Test submitting answers for a batch and verify score calculation.
-    -   [ ] Test adaptive difficulty adjustment: increasing, decreasing, and staying the same based on performance.
-    -   [ ] Test question selection logic: preference for unseen questions, handling of small question pools at certain difficulties.
-    -   [ ] Test continuous attempts and question repetition when the pool of unique questions is exhausted for a session.
-    -   [ ] Test error handling for invalid inputs or non-existent resources.
+-   [x] **Student-Side Self-Practice Routes (`routes/selfPracticeRoutes.js`)**
+    -   [x] `GET /api/self-practice/banks` (Student, `authMiddleware`, `getAvailableQuestionBanks`)
+    -   [x] `POST /api/self-practice/start/:questionBankId` (Student, `authMiddleware`, `startOrResumePracticeSession`) // Could also be a GET if it just returns the first batch
+    -   [x] `POST /api/self-practice/submit/:questionBankId` (Student, `authMiddleware`, `submitPracticeBatchAnswers`)
+-   [x] **Update Main App File (`server.js`)**
+    -   [x] Mount `selfPracticeRoutes`.
+-   [x] **Error Handling & Edge Cases for Adaptive Logic**
+    -   [x] Handle `QuestionBank` with < 5 questions overall.
+    -   [x] Handle scenarios where a difficulty level has no questions or all have been recently attempted.
+    -   [x] Ensure `currentAdaptiveDifficulty` stays within 1-5 bounds.
+-   [x] **Testing Phase 6**
+    -   [x] Test student fetching available question banks.
+    -   [x] Test student starting a practice session and receiving the first batch (difficulty 1).
+    -   [x] Test submitting answers for a batch and verify score calculation.
+    -   [x] Test adaptive difficulty adjustment: increasing, decreasing, and staying the same based on performance.
+    -   [x] Test question selection logic: preference for unseen questions, handling of small question pools at certain difficulties.
+    -   [x] Test continuous attempts and question repetition when the pool of unique questions is exhausted for a session.
+    -   [x] Test error handling for invalid inputs or non-existent resources.
 
  
