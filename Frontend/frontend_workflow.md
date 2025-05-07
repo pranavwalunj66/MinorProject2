@@ -2,102 +2,99 @@
 
 ## Phase 1: Project Setup & Basic Structure (Revised)
 
--   [ ] **Initialize React Project**
-    -   [ ] Project initialized with Vite: `pnpm create vite@latest frontend -- --template react`
-    -   [ ] Using React (ensure latest stable version) and Vite (ensure latest stable version)
--   [ ] **Complete Core Dependencies Setup**
-    -   [ ] Install `react-router-dom` (for routing): `pnpm install react-router-dom`
-    -   [ ] Install `axios` (for API calls): `pnpm install axios`
-    -   [ ] Install state management library: `pnpm install zustand`
-    -   [ ] Install styling library: `pnpm install tailwindcss postcss autoprefixer`
-    -   [ ] Initialize Tailwind CSS: `npx tailwindcss init -p`
-    -   [ ] Configure Tailwind CSS by updating `tailwind.config.js` (content paths, theme).
-    -   [ ] Install an icon library (e.g., `react-icons`): `pnpm install react-icons`
-    -   [ ] Install a notification/toast library (e.g., `react-toastify`): `pnpm install react-toastify`
--   [ ] **Setup Project Structure**
-    -   [ ] `/src/components` (Reusable UI components)
-        -   [ ] `/src/components/ui` (Generic UI elements: Button, Input, Modal, Card, Spinner, Tooltip, etc. - styled with Tailwind)
-        -   [ ] `/src/components/layout` (Navbar, Footer, Sidebar, PageLayout, DashboardLayout)
-        -   [ ] `/src/components/auth` (LoginForm, RegisterForm, RoleSelection (for registration if needed))
-        -   [ ] `/src/components/common` (Higher-level common components, e.g., ConfirmationModal, DataTable, Breadcrumbs)
-        -   [ ] `/src/components/class` (ClassCard, CreateClassForm, JoinClassForm, ClassList)
-        -   [ ] `/src/components/quiz` (QuizCard, QuizForm (for creation/editing), QuestionForm, OptionForm, QuizAttemptView, QuizResultView)
-        -   [ ] `/src/components/questionBank` (QuestionBankCard, QuestionBankForm, PracticeQuestionView)
-        -   [ ] `/src/components/leaderboard` (LeaderboardTable)
-    -   [ ] `/src/pages` (Top-level route components: HomePage, LoginPage, RegisterPage, NotFoundPage, TeacherDashboardPage, StudentDashboardPage, CreateQuizPage, AttemptQuizPage, QuizResultsPage, ViewClassDetailsPage, CreateQuestionBankPage, PracticeSessionPage, ViewLeaderboardPage etc.)
-    -   [ ] `/src/services` (API call functions, organized by resource)
-        -   [ ] Create `api.js` (or `axiosInstance.js`) to configure Axios (baseURL from `.env`, interceptors for auth tokens and global error handling like 401).
-        -   [ ] `authService.js` (registerTeacher, loginTeacher, registerStudent, loginStudent)
-        -   [ ] `classService.js` (createClass, joinClass, getTeacherClasses, getStudentClasses, getClassDetails)
-        -   [ ] `quizService.js` (createQuiz, assignQuizToClass, getQuizzesByTeacher, getQuizzesForClass, getQuizDetailsForTeacher, getQuizForAttempt (student))
-        -   [ ] `attemptService.js` (submitQuizAttempt, getStudentQuizResults, getQuizResultsForTeacher)
-        -   [ ] `questionBankService.js` (createQuestionBank, getTeacherQuestionBanks, getQuestionBankById, updateQuestionBank, deleteQuestionBank, assignQuestionBankToClass)
-        -   [ ] `selfPracticeService.js` (getAvailableQuestionBanks, startOrResumePracticeSession, submitPracticeBatchAnswers)
-        -   [ ] `leaderboardService.js` (getQuizLeaderboardByClass)
-    -   [ ] `/src/store` (Zustand stores)
-        -   [ ] `authStore.js` (user, token, role, login, logout, register actions)
-        -   [ ] `uiStore.js` (loading states, modal states, notifications)
-        -   [ ] `teacherStore.js` (teacher's classes, quizzes, question banks)
-        -   [ ] `studentStore.js` (student's enrolled classes, quiz attempts, practice sessions)
-    -   [ ] `/src/hooks` (Custom React hooks: `useAuth.js`, `useApi.js` (generic API call hook), `useForm.js`, etc.)
-    -   [ ] `/src/utils` (Helper functions, constants, validators, formatters, enums)
-    -   [ ] `/src/assets` (Images, global styles - `main.css` for Tailwind base styles and custom global styles)
-    -   [ ] `/src/routes` (Route configuration, protected routes logic: `ProtectedRoute.jsx`)
-    -   [ ] `/src/config` (Application-level configurations, e.g., API endpoint paths, role names)
--   [ ] **Basic Routing Setup (`App.jsx` and `routes/index.jsx`)**
-    -   [ ] Implement `BrowserRouter` in `main.jsx`.
-    -   [ ] Create `App.jsx` as the main application shell (includes `ToastContainer`, main layout structure).
-    -   [ ] Create `routes/index.jsx` to define routes:
-        -   [ ] Public: `/` (HomePage - simple landing), `/login` (Unified LoginPage, role decided by backend or UI), `/register` (Unified RegisterPage or separate `/register/teacher`, `/register/student`).
-        -   [ ] Common: `/unauthorized`, `/not-found`.
-        -   [ ] Placeholder for protected routes (e.g., `/dashboard`).
-    -   [ ] Create basic placeholder components for initial pages.
--   [ ] **Global Styles & Theme**
-    -   [ ] Configure `tailwind.config.js` (content paths, theme: colors, fonts).
-    -   [ ] Import Tailwind base styles in `src/main.css`.
-    -   [ ] Add global notification setup (`ToastContainer` in `App.jsx`).
--   [ ] **Environment Configuration**
-    -   [ ] Create `.env` and `.env.example` files.
-    -   [ ] Add `VITE_API_BASE_URL=http://localhost:5000/api` to `.env`.
--   [ ] **Vercel Deployment Setup**
-    -   [ ] Frontend already deployed on Vercel.
-    -   [ ] Configure Vercel project settings: build command (`pnpm run build`), output directory (`dist`), environment variables (`VITE_API_BASE_URL` for production).
-    -   [ ] Ensure automatic deployment from Git repository.
--   [ ] **Linting and Formatting**
-    -   [ ] Setup ESLint and Prettier with recommended configurations for React/Vite.
-    -   [ ] Add pnpm scripts: `lint`, `format`.
--   [ ] **Testing Phase 1**
-    -   [ ] App runs locally (`pnpm run dev`).
-    -   [ ] Basic navigation between placeholder pages works.
-    -   [ ] Simple change deploys to Vercel.
-    -   [ ] Environment variables are accessible.
-    -   [ ] Basic Tailwind styling is applied.
-    -   [ ] Linters and formatters run correctly.
+-   [✓] **Initialize React Project**
+    -   [✓] Project initialized with Vite: `pnpm create vite@latest frontend -- --template react`
+    -   [✓] Using React (ensure latest stable version) and Vite (ensure latest stable version)
+-   [✓] **Complete Core Dependencies Setup**
+    -   [✓] Install `react-router-dom` (for routing): `pnpm install react-router-dom`
+    -   [✓] Install `axios` (for API calls): `pnpm install axios`
+    -   [✓] Install state management library: `pnpm install zustand`
+    -   [✓] Install styling library: `pnpm install tailwindcss postcss autoprefixer`
+    -   [✓] Initialize Tailwind CSS: `npx tailwindcss init -p`
+    -   [✓] Configure Tailwind CSS by updating `tailwind.config.js` (content paths, theme).
+    -   [✓] Install an icon library (e.g., `react-icons`): `pnpm install react-icons`
+    -   [✓] Install a notification/toast library (e.g., `react-toastify`): `pnpm install react-toastify`
+-   [✓] **Setup Project Structure**
+    -   [✓] `/src/components` (Reusable UI components)
+        -   [✓] `/src/components/ui` (Generic UI elements: Button, Input, Modal, Card, Spinner, Tooltip, etc. - styled with Tailwind)
+        -   [✓] `/src/components/layout` (Navbar, Footer, PageLayout, DashboardLayout)
+        -   [✓] `/src/components/auth` (LoginForm, RegisterForm, RoleSelection (for registration if needed))
+        -   [✓] `/src/components/common` (Higher-level common components, e.g., ConfirmationModal, DataTable, Breadcrumbs)
+        -   [✓] `/src/components/class` (ClassCard, CreateClassForm, JoinClassForm, ClassList)
+        -   [✓] `/src/components/quiz` (QuizCard, QuizForm (for creation/editing), QuestionForm, OptionForm, QuizAttemptView, QuizResultView)
+        -   [✓] `/src/components/questionBank` (QuestionBankCard, QuestionBankForm, PracticeQuestionView)
+        -   [✓] `/src/components/leaderboard` (LeaderboardTable)
+    -   [✓] `/src/pages` (Top-level route components: HomePage, LoginPage, RegisterPage, NotFoundPage, TeacherDashboardPage, StudentDashboardPage, CreateQuizPage, AttemptQuizPage, QuizResultsPage, ViewClassDetailsPage, CreateQuestionBankPage, PracticeSessionPage, ViewLeaderboardPage etc.)
+    -   [✓] `/src/services` (API call functions, organized by resource)
+        -   [✓] Create `api.js` (or `axiosInstance.js`) to configure Axios (baseURL from `.env`, interceptors for auth tokens and global error handling like 401).
+        -   [✓] `authService.js` (registerTeacher, loginTeacher, registerStudent, loginStudent)
+        -   [✓] `classService.js` (createClass, joinClass, getTeacherClasses, getStudentClasses, getClassDetails)
+        -   [✓] `quizService.js` (createQuiz, assignQuizToClass, getQuizzesByTeacher, getQuizzesForClass, getQuizDetailsForTeacher, getQuizForAttempt (student))
+        -   [✓] `attemptService.js` (submitQuizAttempt, getStudentQuizResults, getQuizResultsForTeacher)
+        -   [✓] `questionBankService.js` (createQuestionBank, getTeacherQuestionBanks, getQuestionBankById, updateQuestionBank, deleteQuestionBank, assignQuestionBankToClass)
+        -   [✓] `selfPracticeService.js` (getAvailableQuestionBanks, startOrResumePracticeSession, submitPracticeBatchAnswers)
+        -   [✓] `leaderboardService.js` (getQuizLeaderboardByClass)
+    -   [✓] `/src/store` (Zustand stores)
+        -   [✓] `authStore.js` (user, token, role, login, logout, register actions)
+        -   [✓] `uiStore.js` (loading states, modal states, notifications)
+        -   [✓] `teacherStore.js` (teacher's classes, quizzes, question banks)
+        -   [✓] `studentStore.js` (student's enrolled classes, quiz attempts, practice sessions)
+    -   [✓] `/src/hooks` (Custom React hooks: `useAuth.js`, `useApi.js` (generic API call hook), `useForm.js`, etc.)
+    -   [✓] `/src/utils` (Helper functions, constants, validators, formatters, enums)
+    -   [✓] `/src/assets` (Images, global styles - `main.css` for Tailwind base styles and custom global styles)
+    -   [✓] `/src/routes` (Route configuration, protected routes logic: `ProtectedRoute.jsx`)
+    -   [✓] `/src/config` (Application-level configurations, e.g., API endpoint paths, role names)
+-   [✓] **Basic Routing Setup (`App.jsx` and `routes/index.jsx`)**
+    -   [✓] Implement `BrowserRouter` in `main.jsx`.
+    -   [✓] Create `App.jsx` as the main application shell (includes `ToastContainer`, main layout structure).
+    -   [✓] Create `routes/index.jsx` to define routes:
+        -   [✓] Public: `/` (HomePage - simple landing), `/login` (Unified LoginPage, role decided by backend or UI), `/register` (Unified RegisterPage or separate `/register/teacher`, `/register/student`).
+        -   [✓] Common: `/unauthorized`, `/not-found`.
+        -   [✓] Placeholder for protected routes (e.g., `/dashboard`).
+    -   [✓] Create basic placeholder components for initial pages.
+-   [✓] **Global Styles & Theme**
+    -   [✓] Configure `tailwind.config.js` (content paths, theme: colors, fonts).
+    -   [✓] Import Tailwind base styles in `src/main.css`.
+    -   [✓] Add global notification setup (`ToastContainer` in `App.jsx`).
+-   [✓] **Vercel Deployment Setup**
+    -   [✓] Frontend already deployed on Vercel.
+    -   [✓] Configure Vercel project settings: build command (`pnpm run build`), output directory (`dist`), environment variables (`VITE_API_BASE_URL` for production).
+    -   [✓] Ensure automatic deployment from Git repository.
+-   [✓] **Linting and Formatting**
+    -   [✓] Setup ESLint and Prettier with recommended configurations for React/Vite.
+    -   [✓] Add pnpm scripts: `lint`, `format`.
+-   [✓] **Testing Phase 1**
+    -   [✓] App runs locally (`pnpm run dev`).
+    -   [✓] Basic navigation between placeholder pages works.
+    -   [✓] Simple change deploys to Vercel.
+    -   [✓] Environment variables are accessible.
+    -   [✓] Basic Tailwind styling is applied.
+    -   [✓] Linters and formatters run correctly.
 
-## Phase 2: User Authentication (Teacher & Student)
+## Phase 2: User Authentication (Teacher & Student) (In Progress)
 
--   [ ] **Services (`authService.js`)**
-    -   [ ] Implement `registerTeacher(name, email, password)` using `/api/auth/teacher/register`.
-    -   [ ] Implement `loginTeacher(email, password)` using `/api/auth/teacher/login`.
-    -   [ ] Implement `registerStudent(name, email, password)` using `/api/auth/student/register`.
-    -   [ ] Implement `loginStudent(email, password)` using `/api/auth/student/login`.
-    -   [ ] Centralize API call logic in `axiosInstance.js` to attach token and handle errors.
--   [ ] **State Management (`authStore.js`)**
-    -   [ ] Store: `user` (object: `_id`, `name`, `email`, `role`), `token`, `isAuthenticated`, `isLoading`.
-    -   [ ] Actions: `loginUser(credentials, role)`, `registerUser(userData, role)`, `logoutUser`.
-    -   [ ] Persist auth state (token, user) to `localStorage` and rehydrate on app load.
-    -   [ ] `axiosInstance.js` should use token from this store.
--   [ ] **UI Components (`components/auth`)**
-    -   [ ] `LoginForm.jsx`: Email, password fields. Handles submit, calls `authStore.loginUser`.
-    -   [ ] `RegisterForm.jsx`: Name, email, password fields. Handles submit, calls `authStore.registerUser`.
-    -   [ ] Consider a role selection mechanism if using unified login/register pages.
--   [ ] **Pages (`pages/auth`)**
-    -   [ ] `LoginPage.jsx`: Renders `LoginForm`. Option to switch between Teacher/Student login or unified.
-    -   [ ] `RegisterPage.jsx`: Renders `RegisterForm`. Option to switch between Teacher/Student registration or unified.
--   [ ] **Protected Routes (`routes/ProtectedRoute.jsx`)**
-    -   [ ] Component that checks `authStore.isAuthenticated` and `authStore.user.role`.
-    -   [ ] Redirects to `/login` if not authenticated.
-    -   [ ] Redirects to `/unauthorized` or `/` if authenticated but wrong role for a specific route.
+-   [x] **Services (`authService.js`)**
+    -   [x] Implement `registerTeacher(name, email, password)` using `/api/auth/teacher/register`.
+    -   [x] Implement `loginTeacher(email, password)` using `/api/auth/teacher/login`.
+    -   [x] Implement `registerStudent(name, email, password)` using `/api/auth/student/register`.
+    -   [x] Implement `loginStudent(email, password)` using `/api/auth/student/login`.
+    -   [x] Centralize API call logic in `axiosInstance.js` to attach token and handle errors.
+-   [x] **State Management (`authStore.js`)**
+    -   [x] Store: `user` (object: `_id`, `name`, `email`, `role`), `token`, `isAuthenticated`, `isLoading`.
+    -   [x] Actions: `loginUser(credentials, role)`, `registerUser(userData, role)`, `logoutUser`.
+    -   [x] Persist auth state (token, user) to `localStorage` and rehydrate on app load.
+    -   [x] `axiosInstance.js` should use token from this store.
+-   [x] **UI Components (`components/auth`)**
+    -   [x] `LoginForm.jsx`: Email, password fields. Handles submit, calls `authStore.loginUser`.
+    -   [x] `RegisterForm.jsx`: Name, email, password fields. Handles submit, calls `authStore.registerUser`.
+    -   [x] Consider a role selection mechanism if using unified login/register pages.
+-   [x] **Pages (`pages/auth`)**
+    -   [x] `LoginPage.jsx`: Renders `LoginForm`. Option to switch between Teacher/Student login or unified.
+    -   [x] `RegisterPage.jsx`: Renders `RegisterForm`. Option to switch between Teacher/Student registration or unified.
+-   [x] **Protected Routes (`routes/ProtectedRoute.jsx`)**
+    -   [x] Component that checks `authStore.isAuthenticated` and `authStore.user.role`.
+    -   [x] Redirects to `/login` if not authenticated.
+    -   [x] Redirects to `/unauthorized` or `/` if authenticated but wrong role for a specific route.
 -   [ ] **Routing Updates (`routes/index.jsx`)**
     -   [ ] Define dashboard routes for teacher and student, protected by `ProtectedRoute.jsx` with role checks.
         -   e.g., `/teacher/dashboard`, `/student/dashboard`.
