@@ -3,6 +3,9 @@ const cors = require('cors');
 const config = require('./config/config');
 const connectDB = require('./config/db');
 
+// Import routes
+const authRoutes = require('./routes/authRoutes');
+
 // Connect to MongoDB
 connectDB();
 
@@ -15,6 +18,9 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Mount routes
+app.use('/api/auth', authRoutes);
 
 // Default route
 app.get('/', (req, res) => {
@@ -32,7 +38,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = config.PORT;
+const PORT = config.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running in ${config.NODE_ENV} mode on port ${PORT}`);
 }); 

@@ -18,51 +18,51 @@
 -   [x] **Database Setup**
     -   [x] Choose a database (MongoDB with Mongoose)
     -   [x] Implement database connection logic in `config/db.js`.
--   [ ] **User Models (Teacher & Student)**
-    -   [ ] Define `Teacher` schema/model (`name`, `email`, `password`, `createdClasses`) in `models/Teacher.js`.
-    -   [ ] Define `Student` schema/model (`name`, `email`, `password`, `enrolledClasses`, `quizAttempts`) in `models/Student.js`.
-    -   [ ] Implement password hashing for both models.
--   [ ] **Authentication Controllers**
-    -   [ ] `registerTeacher` controller in `controllers/authController.js`:
-        -   Validate input (name, email, password).
-        -   Check if email already exists.
-        -   Hash password.
-        -   Create and save new Teacher.
-        -   Generate JWT token.
-    -   [ ] `loginTeacher` controller in `controllers/authController.js`:
-        -   Validate input (email, password).
-        -   Find Teacher by email.
-        -   Compare hashed password.
-        -   Generate JWT token.
-    -   [ ] `registerStudent` controller in `controllers/authController.js`:
-        -   Validate input (name, email, password).
-        -   Check if email already exists.
-        -   Hash password.
-        -   Create and save new Student.
-        -   Generate JWT token.
-    -   [ ] `loginStudent` controller in `controllers/authController.js`:
-        -   Validate input (email, password).
-        -   Find Student by email.
-        -   Compare hashed password.
-        -   Generate JWT token.
--   [ ] **Authentication Routes**
-    -   [ ] Define routes in `routes/authRoutes.js`:
-        -   `POST /api/auth/teacher/register`
-        -   `POST /api/auth/teacher/login`
-        -   `POST /api/auth/student/register`
-        -   `POST /api/auth/student/login`
--   [ ] **Authentication Middleware**
-    -   [ ] Create `authMiddleware.js` in `/middleware` to protect routes:
-        -   Verify JWT token.
-        -   Attach user information to request object (`req.user`).
-        -   Differentiate between Teacher and Student roles if necessary for certain routes.
--   [ ] **Main App File (`server.js` or `app.js`)**
-    -   [ ] Import dependencies.
-    -   [ ] Connect to database.
-    -   [ ] Use middleware (CORS, body parser for JSON).
-    -   [ ] Mount auth routes.
-    -   [ ] Basic error handling middleware.
-    -   [ ] Start the server.
+-   [x] **User Models (Teacher & Student)**
+    -   [x] Define `Teacher` schema/model (`name`, `email`, `password`, `createdClasses`) in `models/Teacher.js`.
+    -   [x] Define `Student` schema/model (`name`, `email`, `password`, `enrolledClasses`, `quizAttempts`) in `models/Student.js`.
+    -   [x] Implement password hashing for both models.
+-   [x] **Authentication Controllers**
+    -   [x] `registerTeacher` controller in `controllers/authController.js`:
+        -   [x] Validate input (name, email, password).
+        -   [x] Check if email already exists.
+        -   [x] Hash password.
+        -   [x] Create and save new Teacher.
+        -   [x] Generate JWT token.
+    -   [x] `loginTeacher` controller in `controllers/authController.js`:
+        -   [x] Validate input (email, password).
+        -   [x] Find Teacher by email.
+        -   [x] Compare hashed password.
+        -   [x] Generate JWT token.
+    -   [x] `registerStudent` controller in `controllers/authController.js`:
+        -   [x] Validate input (name, email, password).
+        -   [x] Check if email already exists.
+        -   [x] Hash password.
+        -   [x] Create and save new Student.
+        -   [x] Generate JWT token.
+    -   [x] `loginStudent` controller in `controllers/authController.js`:
+        -   [x] Validate input (email, password).
+        -   [x] Find Student by email.
+        -   [x] Compare hashed password.
+        -   [x] Generate JWT token.
+-   [x] **Authentication Routes**
+    -   [x] Define routes in `routes/authRoutes.js`:
+        -   [x] `POST /api/auth/teacher/register`
+        -   [x] `POST /api/auth/teacher/login`
+        -   [x] `POST /api/auth/student/register`
+        -   [x] `POST /api/auth/student/login`
+-   [x] **Authentication Middleware**
+    -   [x] Create `authMiddleware.js` in `/middleware` to protect routes:
+        -   [x] Verify JWT token.
+        -   [x] Attach user information to request object (`req.user`).
+        -   [x] Differentiate between Teacher and Student roles if necessary for certain routes.
+-   [x] **Main App File (`server.js` or `app.js`)**
+    -   [x] Import dependencies.
+    -   [x] Connect to database.
+    -   [x] Use middleware (CORS, body parser for JSON).
+    -   [x] Mount auth routes.
+    -   [x] Basic error handling middleware.
+    -   [x] Start the server.
 -   [ ] **Testing Phase 1**
     -   [ ] Test Teacher registration and login using Postman or similar tool.
     -   [ ] Test Student registration and login.
